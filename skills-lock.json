@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "capacitor-best-practices": {
+      "source": "cap-go/capacitor-skills",
+      "sourceType": "github",
+      "skillPath": "skills/capacitor-best-practices/SKILL.md",
+      "computedHash": "4b5ba5caae080d8e2be86fa2c35f77025ed46835ed1f39f3129e06325813737b"
+    },
+    "capacitor-plugins": {
+      "source": "capawesome-team/skills",
+      "sourceType": "github",
+      "skillPath": "skills/capacitor-plugins/SKILL.md",
+      "computedHash": "5eeddf952ca77747a30702cf41aac6fc90851bbbd80fb9796687af777b668549"
+    }
+  }
+}
