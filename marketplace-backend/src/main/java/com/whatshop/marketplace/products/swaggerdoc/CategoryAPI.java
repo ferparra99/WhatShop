@@ -1,4 +1,4 @@
-package com.whatshop.marketplace.products.controller;
+package com.whatshop.marketplace.products.swaggerdoc;
 
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,15 +13,15 @@ import java.util.Map;
 public interface CategoryAPI {
 
     @Operation(summary = "Listar todas las categorias", description = "Devuelve el listado completo de categorias disponibles para clasificar productos.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Listado de categorias")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Listado de categorias")
     })
     ResponseEntity<ApiResponse<?>> listCategories();
 
     @Operation(summary = "Crear una nueva categoria", description = "Crea una categoria nueva. El slug se genera automaticamente a partir del nombre.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Categoria creada"),
-        @ApiResponse(responseCode = "400", description = "La categoria ya existe", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Categoria creada"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "La categoria ya existe", content = @Content)
     })
     ResponseEntity<ApiResponse<?>> createCategory(Map<String, String> body);
 }

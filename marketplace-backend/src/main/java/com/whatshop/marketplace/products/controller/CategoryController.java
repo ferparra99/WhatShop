@@ -1,6 +1,7 @@
 package com.whatshop.marketplace.products.controller;
 
 import com.whatshop.marketplace.products.service.CategoryService;
+import com.whatshop.marketplace.products.swaggerdoc.CategoryAPI;
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

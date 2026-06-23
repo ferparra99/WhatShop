@@ -1,5 +1,5 @@
 # MarketApp — Documento de Proyecto
-> **Versión:** 1.0.4 | **Última actualización:** 2026-06-22
+> **Versión:** 1.0.5 | **Última actualización:** 2026-06-22
 > **Para agentes IA:** Este archivo es la fuente de verdad del proyecto. Cada módulo tiene su estado, dependencias, entidades y endpoints definidos. Antes de generar código, consultá este archivo para respetar la arquitectura acordada.
 
 ---
@@ -38,7 +38,7 @@ marketplace/
 │
 ├── marketplace-backend/                      ✅ Creado (v1.0.1)
 │   ├── pom.xml                               ✅
-│   └── src/main/java/com/tuapp/marketplace/
+│       └── src/main/java/com/whatshop/marketplace/
 │       ├── MarketplaceApplication.java       ✅
 │       ├── config/                           ← Configuración global
 │       │   ├── AppConfig.java                ✅ (CORS + JPA Auditing)
@@ -52,30 +52,30 @@ marketplace/
 │       │   ├── entity/                       ✅ User, Role
 │       │   ├── repository/                   ✅ UserRepository
 │       │   ├── service/                      ✅ AuthService, JwtUtil, UserDetails
-│       │   ├── controller/                   ✅ AuthController, AdminController
-│       │   ├── controller/AuthAPI.java       ✅ (interface Swagger)
-│       │   ├── controller/AdminAPI.java      ✅ (interface Swagger)
+│   │   ├── controller/                   ✅ AuthController, AdminController
+│   │   ├── swaggerdoc/AuthAPI.java       ✅ (interface Swagger)
+│   │   ├── swaggerdoc/AdminAPI.java      ✅ (interface Swagger)
 │       │   ├── filter/                       ✅ JwtAuthFilter
 │       │   └── dto/                          ✅ RegisterRequest, LoginRequest, AuthResponse
 │       ├── users/                            ← MÓDULO 2 (A) ✅
 │       │   ├── service/                      ✅ UserService
-│       │   ├── controller/                   ✅ UserController
-│       │   ├── controller/UserAPI.java       ✅ (interface Swagger)
+│   │   ├── controller/                   ✅ UserController
+│   │   ├── swaggerdoc/UserAPI.java       ✅ (interface Swagger)
 │       │   └── dto/                          ✅ UserProfileDTO, UpdateUserRequest
 │       ├── sellers/                          ← MÓDULO 2 (B) ✅
 │       │   ├── entity/                       ✅ Seller
 │       │   ├── repository/                   ✅ SellerRepository
 │       │   ├── service/                      ✅ SellerService
-│       │   ├── controller/                   ✅ SellerController
-│       │   ├── controller/SellerAPI.java     ✅ (interface Swagger)
+│   │   ├── controller/                   ✅ SellerController
+│   │   ├── swaggerdoc/SellerAPI.java     ✅ (interface Swagger)
 │       │   └── dto/                          ✅ SellerProfileDTO, UpdateSellerRequest
 │       └── products/                         ← MÓDULO 3 ✅
 │           ├── entity/                       ✅ Category, Product, ProductStatus
 │           ├── repository/                   ✅ CategoryRepository, ProductRepository
 │           ├── service/                      ✅ CategoryService, ProductService
 │           ├── controller/                   ✅ CategoryController, ProductController
-│           ├── controller/ProductAPI.java    ✅ (interface Swagger)
-│           ├── controller/CategoryAPI.java   ✅ (interface Swagger)
+│           ├── swaggerdoc/ProductAPI.java    ✅ (interface Swagger)
+│           ├── swaggerdoc/CategoryAPI.java   ✅ (interface Swagger)
 │           └── dto/                          ✅ ProductDTO, CreateProductRequest,
 │                                                UpdateProductRequest, ProductPageResponse
 │
@@ -94,7 +94,7 @@ marketplace/
 
 **Estado general:** ✅ COMPLETO
 **Prioridad:** 🔴 CRÍTICA — todos los demás módulos dependen de este
-**Paquete:** `com.tuapp.marketplace.auth`
+**Paquete:** `com.whatshop.marketplace.auth`
 
 ### Descripción
 Gestión completa de autenticación con JWT. Registro, login y control de acceso por roles.
@@ -154,7 +154,7 @@ Gestión completa de autenticación con JWT. Registro, login y control de acceso
 
 **Estado general:** ✅ COMPLETO
 **Prioridad:** ALTA — depende del Módulo 1 (auth)
-**Paquetes:** `com.tuapp.marketplace.users` / `com.tuapp.marketplace.sellers`
+**Paquetes:** `com.whatshop.marketplace.users` / `com.whatshop.marketplace.sellers`
 
 ### Descripción
 Gestión del perfil del comprador y el perfil extendido del vendedor (tienda, descripción, métricas).
@@ -275,6 +275,11 @@ CRUD completo de productos. Los vendedores crean y gestionan sus productos. Los 
 
 ## Configuración del entorno
 
+### JDK requerido
+- **JDK 21** (obligatorio — Java 26 + Lombok no son compatibles actualmente)
+- Configurar `JAVA_HOME` apuntando al JDK 21
+- Si usás IntelliJ, configurá el SDK del proyecto a JDK 21
+
 ### Variables de entorno requeridas
 ```bash
 # Base de datos
@@ -297,8 +302,8 @@ WA_VERIFY_TOKEN=
 # Levantar base de datos
 docker-compose up -d
 
-# Correr backend
-./mvnw spring-boot:run
+# Correr backend (requiere JAVA_HOME apuntando a JDK 21)
+mvn spring-boot:run
 
 # Correr frontend
 ng serve
@@ -330,6 +335,11 @@ ng build && npx cap sync
 5. Todas las rutas privadas requieren JWT válido
 6. Un SELLER solo puede modificar sus propios recursos
 
+### Swagger / Documentación
+7. Las anotaciones Swagger (`@Tag`, `@Operation`, `@ApiResponse`, `@SecurityRequirement`) van exclusivamente en interfaces dentro de `swaggerdoc/`
+8. Los `Controller` **nunca** tienen anotaciones Swagger — implementan las interfaces `*API` y quedan limpios
+9. Todos los métodos de `Controller` deben tener **JavaDoc** explicando parámetros, retorno y excepciones
+
 ---
 
 ## Historial de cambios
@@ -341,4 +351,5 @@ ng build && npx cap sync
 | 2026-06-22 | 1.0.2 | Refactorización MVC completa: carpetas separadas por capa (entity/repository/service/controller/dto/filter/config). Principios SOLID y Clean Code aplicados |
 | 2026-06-22 | 1.0.3 | Swagger/OpenAPI agregado. Config global con esquema JWT, 6 controllers documentados con @Tag + @Operation + @ApiResponse, 10 DTOs con @Schema |
 | 2026-06-22 | 1.0.4 | Swagger movido a 6 interfaces API separadas. Controllers limpios con JavaDoc. Sistema de logs AOP (consola coloreada). Dependencia spring-boot-starter-aop |
+| 2026-06-22 | 1.0.5 | Interfaces Swagger movidas a carpeta `swaggerdoc/` separada de controllers. Reglas de documentación agregadas a `PROJECT.md` |
 

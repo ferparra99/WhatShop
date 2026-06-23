@@ -1,5 +1,6 @@
-package com.whatshop.marketplace.users.controller;
+package com.whatshop.marketplace.users.swaggerdoc;
 
+import com.whatshop.marketplace.auth.entity.User;
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import com.whatshop.marketplace.users.dto.UpdateUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,18 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserAPI {
 
     @Operation(summary = "Ver mi perfil de usuario", description = "Devuelve los datos personales del usuario autenticado (email, nombre, telefono, rol).")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Perfil del usuario"),
-        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Perfil del usuario"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autenticado", content = @Content)
     })
-    ResponseEntity<ApiResponse<?>> getMyProfile(org.springframework.security.core.annotation.AuthenticationPrincipal User user);
+    ResponseEntity<ApiResponse<?>> getMyProfile(@org.springframework.security.core.annotation.AuthenticationPrincipal User user);
 
     @Operation(summary = "Actualizar mi perfil", description = "Actualiza los datos personales del usuario autenticado (nombre y/o telefono).")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Perfil actualizado"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Perfil actualizado"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos", content = @Content)
     })
     ResponseEntity<ApiResponse<?>> updateMyProfile(
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateUserRequest request);
 }

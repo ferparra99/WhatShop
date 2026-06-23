@@ -4,6 +4,7 @@ import com.whatshop.marketplace.auth.entity.User;
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import com.whatshop.marketplace.users.dto.UpdateUserRequest;
 import com.whatshop.marketplace.users.service.UserService;
+import com.whatshop.marketplace.users.swaggerdoc.UserAPI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

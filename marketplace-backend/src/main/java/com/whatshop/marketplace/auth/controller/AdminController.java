@@ -2,6 +2,7 @@ package com.whatshop.marketplace.auth.controller;
 
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import com.whatshop.marketplace.users.service.UserService;
+import com.whatshop.marketplace.auth.swaggerdoc.AdminAPI;
 import com.whatshop.marketplace.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

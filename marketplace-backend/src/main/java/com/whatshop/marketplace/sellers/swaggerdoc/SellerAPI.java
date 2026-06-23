@@ -1,5 +1,6 @@
-package com.whatshop.marketplace.sellers.controller;
+package com.whatshop.marketplace.sellers.swaggerdoc;
 
+import com.whatshop.marketplace.auth.entity.User;
 import com.whatshop.marketplace.sellers.dto.UpdateSellerRequest;
 import com.whatshop.marketplace.shared.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,44 +20,44 @@ import java.util.UUID;
 public interface SellerAPI {
 
     @Operation(summary = "Listar vendedores activos", description = "Devuelve todos los vendedores que tienen su tienda activa en el marketplace.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Listado de vendedores")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Listado de vendedores")
     })
     ResponseEntity<ApiResponse<?>> listActiveSellers();
 
     @Operation(summary = "Ver perfil publico de un vendedor", description = "Devuelve la informacion publica de la tienda de un vendedor especifico.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Perfil del vendedor"),
-        @ApiResponse(responseCode = "404", description = "Vendedor no encontrado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Perfil del vendedor"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Vendedor no encontrado", content = @Content)
     })
     ResponseEntity<ApiResponse<?>> getSellerById(@PathVariable UUID id);
 
     @Operation(summary = "Ver mi perfil de vendedor", description = "Devuelve el perfil completo de la tienda del vendedor autenticado. Requiere rol **SELLER**.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Perfil del vendedor"),
-        @ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Perfil de vendedor no encontrado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Perfil del vendedor"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Perfil de vendedor no encontrado", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
-    ResponseEntity<ApiResponse<?>> getMyProfile(org.springframework.security.core.annotation.AuthenticationPrincipal User user);
+    ResponseEntity<ApiResponse<?>> getMyProfile(@org.springframework.security.core.annotation.AuthenticationPrincipal User user);
 
     @Operation(summary = "Actualizar mi tienda", description = "Actualiza los datos de la tienda del vendedor autenticado (nombre, descripcion, NIT, logo). Requiere rol **SELLER**.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Tienda actualizada"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos o nombre de tienda duplicado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Tienda actualizada"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos o nombre de tienda duplicado", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> updateMyProfile(
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateSellerRequest request);
 
     @Operation(summary = "Listar mis productos", description = "Devuelve los productos del vendedor autenticado con paginacion. Requiere rol **SELLER**.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Listado paginado de mis productos"),
-        @ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Listado paginado de mis productos"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> listMyProducts(
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             Pageable pageable);
 }

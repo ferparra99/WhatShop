@@ -21,7 +21,7 @@ public class LoggingAspect {
 
     private static final List<String> SENSITIVE_FIELDS = List.of("password", "token");
 
-    @Around("execution(* com.tuapp.marketplace..controller..*.*(..))")
+    @Around("execution(* com.whatshop.marketplace..controller..*.*(..))")
     public Object logControllerCall(ProceedingJoinPoint joinPoint) throws Throwable {
         var signature = (MethodSignature) joinPoint.getSignature();
         var method = signature.getMethod();

@@ -5,6 +5,7 @@ import com.whatshop.marketplace.auth.dto.RegisterRequest;
 import com.whatshop.marketplace.auth.entity.User;
 import com.whatshop.marketplace.auth.service.AuthService;
 import com.whatshop.marketplace.shared.response.ApiResponse;
+import com.whatshop.marketplace.auth.swaggerdoc.AuthAPI;
 import com.whatshop.marketplace.shared.exception.BadRequestException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

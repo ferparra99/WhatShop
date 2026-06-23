@@ -5,6 +5,7 @@ import com.whatshop.marketplace.products.dto.CreateProductRequest;
 import com.whatshop.marketplace.products.dto.UpdateProductRequest;
 import com.whatshop.marketplace.products.service.ProductService;
 import com.whatshop.marketplace.shared.response.ApiResponse;
+import com.whatshop.marketplace.products.swaggerdoc.ProductAPI;
 import com.whatshop.marketplace.shared.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

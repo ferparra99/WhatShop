@@ -1,5 +1,6 @@
-package com.whatshop.marketplace.products.controller;
+package com.whatshop.marketplace.products.swaggerdoc;
 
+import com.whatshop.marketplace.auth.entity.User;
 import com.whatshop.marketplace.products.dto.CreateProductRequest;
 import com.whatshop.marketplace.products.dto.UpdateProductRequest;
 import com.whatshop.marketplace.shared.response.ApiResponse;
@@ -30,8 +31,8 @@ public interface ProductAPI {
             - `sellerId` - filtrar por vendedor
             - `search` - busqueda por nombre del producto
             """)
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Listado paginado de productos")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Listado paginado de productos")
     })
     ResponseEntity<ApiResponse<?>> listProducts(
             @RequestParam(required = false) UUID categoryId,
@@ -42,47 +43,47 @@ public interface ProductAPI {
             Pageable pageable);
 
     @Operation(summary = "Ver detalle de un producto", description = "Devuelve la informacion completa de un producto especifico.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Detalle del producto"),
-        @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Detalle del producto"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
     })
     ResponseEntity<ApiResponse<?>> getProduct(@PathVariable UUID id);
 
     @Operation(summary = "Buscar productos por nombre", description = "Busca productos cuyo nombre contenga el texto indicado.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Resultados de la busqueda")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Resultados de la busqueda")
     })
     ResponseEntity<ApiResponse<?>> searchProducts(@RequestParam String q, Pageable pageable);
 
     @Operation(summary = "Crear un producto", description = "Crea un nuevo producto. Requiere rol **SELLER**. El vendedor debe tener un perfil de tienda creado previamente.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos o perfil de vendedor inexistente", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos o perfil de vendedor inexistente", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> createProduct(
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody CreateProductRequest request);
 
     @Operation(summary = "Editar un producto", description = "Actualiza los datos de un producto existente. Solo el vendedor propietario puede editarlo. Requiere rol **SELLER**.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Producto actualizado"),
-        @ApiResponse(responseCode = "400", description = "No podes editar un producto que no te pertenece", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Producto actualizado"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "No podes editar un producto que no te pertenece", content = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> updateProduct(
             @PathVariable UUID id,
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateProductRequest request);
 
     @Operation(summary = "Eliminar un producto (soft delete)", description = "Marca un producto como eliminado (no se borra de la base de datos). Solo el vendedor propietario puede eliminar sus productos. Requiere rol **SELLER**.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Producto eliminado"),
-        @ApiResponse(responseCode = "400", description = "No podes eliminar un producto que no te pertenece", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Producto eliminado"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "No podes eliminar un producto que no te pertenece", content = @Content)
     })
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> deleteProduct(
             @PathVariable UUID id,
-            org.springframework.security.core.annotation.AuthenticationPrincipal User user);
+            @org.springframework.security.core.annotation.AuthenticationPrincipal User user);
 }
