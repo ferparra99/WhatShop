@@ -283,7 +283,7 @@ CRUD completo de productos. Los vendedores crean y gestionan sus productos. Los 
 ### Variables de entorno requeridas
 ```bash
 # Base de datos
-DB_URL=jdbc:postgresql://localhost:5432/marketplace_db
+DB_URL=jdbc:postgresql://localhost:5433/marketplace_db
 DB_USER=marketplace_user
 DB_PASS=marketplace_pass
 
@@ -299,7 +299,7 @@ WA_VERIFY_TOKEN=
 
 ### Comandos útiles
 ```bash
-# Levantar base de datos
+# Levantar base de datos (PostgreSQL en puerto 5433)
 docker-compose up -d
 
 # Correr backend (requiere JAVA_HOME apuntando a JDK 21)
