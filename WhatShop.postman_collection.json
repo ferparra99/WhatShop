@@ -1,466 +1,681 @@
 {
   "info": {
     "name": "WhatShop API",
-    "description": "Coleccion de endpoints del marketplace WhatShop.\n\n## Autenticacion\n1. Ejecutar **Register** o **Login** (publicos)\n2. El token se guarda automaticamente en la variable `token`\n3. Los endpoints protegidos lo usan via `Authorization: Bearer {{token}}`",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "opencode"
+    "description": "Colección completa de endpoints para WhatShop Marketplace.\n\n## Cómo usar\n1. Importá este archivo en Postman\n2. Creá un environment llamado 'WhatShop Dev'\n3. Agregá las variables: baseUrl, token, userId, sellerId, productId, categoryId\n4. Ejecutá primero 'Registro' o 'Login' — el token se guarda automáticamente\n\n## Orden recomendado de prueba\n1. Auth → Registrar ADMIN\n2. Auth → Registrar SELLER\n3. Auth → Login SELLER → token guardado automáticamente\n4. Sellers → Crear perfil de tienda\n5. Categories → Crear categoría\n6. Products → Crear producto\n7. Auth → Login BUYER\n8. Products → Listar productos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "sellerId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "productId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "categoryId",
-      "value": "",
-      "type": "string"
-    }
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "sellerId", "value": "", "type": "string" },
+    { "key": "productId", "value": "", "type": "string" },
+    { "key": "categoryId", "value": "", "type": "string" }
   ],
   "item": [
+
     {
-      "name": "Auth",
-      "description": "Endpoints de autenticacion — registro, login, perfil propio y renovacion de token",
+      "name": "🔐 Auth",
+      "description": "Registro, login, perfil y renovación de token JWT.\nRoles válidos al registrar: BUYER, SELLER, ADMIN",
       "item": [
+
         {
-          "name": "Register",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.data && jsonData.data.token) {",
-                  "        pm.collectionVariables.set('token', jsonData.data.token);",
-                  "    }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "Registrar BUYER",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","register"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"comprador@email.com\",\n  \"password\": \"123456\",\n  \"fullName\": \"Juan Perez\",\n  \"phone\": \"+573001234567\",\n  \"role\": \"BUYER\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/register",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "register"]
+              "raw": "{\n  \"email\": \"comprador@whatshop.com\",\n  \"password\": \"Comprador123\",\n  \"fullName\": \"Carlos Mendoza\",\n  \"phone\": \"+573001234567\",\n  \"role\": \"BUYER\"\n}"
             }
-          }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data.token);",
+              "  pm.collectionVariables.set('userId', res.data.userId);",
+              "  console.log('✅ Token guardado:', res.data.token?.substring(0,30) + '...');",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": [{
+            "name": "201 — Registro exitoso",
+            "status": "Created", "code": 201,
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": "{\n  \"success\": true,\n  \"message\": \"Usuario registrado exitosamente\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9...\",\n    \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"comprador@whatshop.com\",\n    \"fullName\": \"Carlos Mendoza\",\n    \"role\": \"ROLE_BUYER\"\n  },\n  \"timestamp\": \"2026-06-23T10:30:00\"\n}"
+          }]
         },
+
+        {
+          "name": "Registrar SELLER",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"vendedor@whatshop.com\",\n  \"password\": \"Vendedor123\",\n  \"fullName\": \"María González\",\n  \"phone\": \"+573109876543\",\n  \"role\": \"SELLER\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data.token);",
+              "  pm.collectionVariables.set('userId', res.data.userId);",
+              "  console.log('✅ SELLER registrado, token guardado');",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": []
+        },
+
+        {
+          "name": "Registrar ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin2@whatshop.com\",\n  \"password\": \"Admin1234!\",\n  \"fullName\": \"Admin WhatShop\",\n  \"phone\": \"+573000000001\",\n  \"role\": \"ADMIN\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data.token);",
+              "  pm.collectionVariables.set('userId', res.data.userId);",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": []
+        },
+
         {
           "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.data && jsonData.data.token) {",
-                  "        pm.collectionVariables.set('token', jsonData.data.token);",
-                  "    }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","login"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"comprador@email.com\",\n  \"password\": \"123456\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "login"]
+              "raw": "{\n  \"email\": \"vendedor@whatshop.com\",\n  \"password\": \"Vendedor123\"\n}"
             }
-          }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data.token);",
+              "  pm.collectionVariables.set('userId', res.data.userId);",
+              "  console.log('✅ Login OK — rol:', res.data.role);",
+              "  pm.test('Login exitoso', () => pm.response.to.have.status(200));",
+              "  pm.test('Token recibido', () => pm.expect(res.data.token).to.be.a('string'));",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": [{
+            "name": "200 — Login exitoso",
+            "status": "OK", "code": 200,
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": "{\n  \"success\": true,\n  \"message\": \"Inicio de sesión exitoso\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9...\",\n    \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"vendedor@whatshop.com\",\n    \"fullName\": \"María González\",\n    \"role\": \"ROLE_SELLER\"\n  },\n  \"timestamp\": \"2026-06-23T10:35:00\"\n}"
+          }, {
+            "name": "401 — Credenciales inválidas",
+            "status": "Unauthorized", "code": 401,
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Unauthorized\",\n  \"status\": 401,\n  \"detail\": \"Credenciales inválidas\",\n  \"timestamp\": \"2026-06-23T10:35:00\"\n}"
+          }]
         },
+
         {
-          "name": "Get My Profile (Me)",
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/me",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "me"]
-            }
-          }
-        },
-        {
-          "name": "Refresh Token",
+          "name": "Login Admin (init.sql)",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/refresh",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "refresh"]
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@whatshop.com\",\n  \"password\": \"Admin1234!\"\n}"
             }
-          }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data.token);",
+              "  pm.collectionVariables.set('userId', res.data.userId);",
+              "  console.log('✅ Admin logueado');",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": []
+        },
+
+        {
+          "name": "Mi perfil (me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/me", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","me"] }
+          },
+          "response": [{
+            "name": "200 — Perfil del usuario",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": {\n    \"token\": null,\n    \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"vendedor@whatshop.com\",\n    \"fullName\": \"María González\",\n    \"role\": \"ROLE_SELLER\"\n  },\n  \"timestamp\": \"2026-06-23T10:40:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Renovar token (refresh)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/refresh", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","refresh"] }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('token', res.data);",
+              "  console.log('✅ Token renovado');",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": []
+        },
+
+        {
+          "name": "❌ Registro — email duplicado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"comprador@whatshop.com\",\n  \"password\": \"Comprador123\",\n  \"fullName\": \"Duplicado Test\",\n  \"phone\": \"+573001234568\",\n  \"role\": \"BUYER\"\n}"
+            }
+          },
+          "response": [{
+            "name": "400 — Email ya registrado",
+            "status": "Bad Request", "code": 400,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"El email ya está registrado\",\n  \"timestamp\": \"2026-06-23T10:30:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "❌ Registro — validación fallida",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"no-es-un-email\",\n  \"password\": \"123\",\n  \"fullName\": \"\",\n  \"phone\": \"3001234567\",\n  \"role\": \"BUYER\"\n}"
+            }
+          },
+          "response": [{
+            "name": "400 — Validaciones fallidas",
+            "status": "Bad Request", "code": 400,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"email: Formato de email inválido, password: La contraseña debe tener al menos 6 caracteres, fullName: El nombre es obligatorio, phone: El teléfono debe tener formato +57XXXXXXXXXX\",\n  \"timestamp\": \"2026-06-23T10:30:00\"\n}"
+          }]
         }
       ]
     },
+
     {
-      "name": "Users",
-      "description": "Gestion del perfil del comprador",
+      "name": "👤 Users",
+      "description": "Perfil del comprador — consultar y actualizar datos personales.",
       "item": [
+
         {
-          "name": "Get My Profile",
+          "name": "Ver mi perfil",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/me",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "me"]
-            }
-          }
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api","v1","users","me"] }
+          },
+          "response": [{
+            "name": "200 — Perfil del usuario",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"comprador@whatshop.com\",\n    \"fullName\": \"Carlos Mendoza\",\n    \"phone\": \"+573001234567\",\n    \"role\": \"ROLE_BUYER\",\n    \"enabled\": true,\n    \"createdAt\": \"2026-06-23T10:30:00\"\n  },\n  \"timestamp\": \"2026-06-23T10:45:00\"\n}"
+          }]
         },
+
         {
-          "name": "Update My Profile",
+          "name": "Actualizar mi perfil",
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Juan Perez Actualizado\",\n  \"phone\": \"+573001234568\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/me",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "me"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Sellers",
-      "item": [
-        {
-          "name": "Publico",
-          "item": [
-            {
-              "name": "List Active Sellers",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/sellers",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "sellers"]
-                }
-              }
-            },
-            {
-              "name": "Get Seller by ID",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/sellers/{{sellerId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "sellers", "{{sellerId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Propio (SELLER)",
-          "item": [
-            {
-              "name": "Get My Seller Profile",
-              "request": {
-                "method": "GET",
-                "header": [
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/v1/sellers/me",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "sellers", "me"]
-                }
-              }
-            },
-            {
-              "name": "Update My Store",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" },
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"storeName\": \"Mi Tienda\",\n  \"description\": \"Venta de productos electronicos\",\n  \"nit\": \"900123456-7\",\n  \"logoUrl\": \"https://ejemplo.com/logo.png\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/v1/sellers/me",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "sellers", "me"]
-                }
-              }
-            },
-            {
-              "name": "Get My Products (Seller)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/v1/sellers/me/products?page=0&size=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "sellers", "me", "products"],
-                  "query": [
-                    { "key": "page", "value": "0" },
-                    { "key": "size", "value": "10" }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Products",
-      "item": [
-        {
-          "name": "Publico",
-          "item": [
-            {
-              "name": "List Products",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products?page=0&size=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products"],
-                  "query": [
-                    { "key": "page", "value": "0" },
-                    { "key": "size", "value": "10" }
-                  ]
-                }
-              }
-            },
-            {
-              "name": "Get Product Detail",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products/{{productId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products", "{{productId}}"]
-                }
-              }
-            },
-            {
-              "name": "Search Products",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products/search?q=smartphone&page=0&size=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products", "search"],
-                  "query": [
-                    { "key": "q", "value": "smartphone" },
-                    { "key": "page", "value": "0" },
-                    { "key": "size", "value": "10" }
-                  ]
-                }
-              }
-            },
-            {
-              "name": "List Products with Filters",
-              "request": {
-                "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products?categoryId={{categoryId}}&minPrice=10.00&maxPrice=500.00&page=0&size=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products"],
-                  "query": [
-                    { "key": "categoryId", "value": "{{categoryId}}" },
-                    { "key": "minPrice", "value": "10.00" },
-                    { "key": "maxPrice", "value": "500.00" },
-                    { "key": "page", "value": "0" },
-                    { "key": "size", "value": "10" }
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Seller (SELLER)",
-          "item": [
-            {
-              "name": "Create Product",
-              "request": {
-                "method": "POST",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" },
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Smartphone Pro Max\",\n  \"description\": \"Telefono de alta gama con 256GB\",\n  \"price\": 499.99,\n  \"stock\": 50,\n  \"categoryId\": \"{{categoryId}}\",\n  \"imageUrl\": \"https://ejemplo.com/smartphone.png\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products"]
-                }
-              }
-            },
-            {
-              "name": "Update Product",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" },
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Smartphone Pro Max Plus\",\n  \"description\": \"Telefono de alta gama con 512GB\",\n  \"price\": 599.99,\n  \"stock\": 30,\n  \"categoryId\": \"{{categoryId}}\",\n  \"imageUrl\": \"https://ejemplo.com/smartphone-plus.png\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products/{{productId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products", "{{productId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Product",
-              "request": {
-                "method": "DELETE",
-                "header": [
-                  { "key": "Authorization", "value": "Bearer {{token}}" }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/v1/products/{{productId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "products", "{{productId}}"]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Categories",
-      "item": [
-        {
-          "name": "List Categories",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{base_url}}/api/v1/categories",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "categories"]
-            }
-          }
-        },
-        {
-          "name": "Create Category",
-          "request": {
-            "method": "POST",
-            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
               { "key": "Content-Type", "value": "application/json" }
             ],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api","v1","users","me"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Electronicos\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/categories",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "categories"]
+              "raw": "{\n  \"fullName\": \"Carlos Alberto Mendoza\",\n  \"phone\": \"+573159876543\"\n}"
             }
-          }
+          },
+          "response": []
         }
       ]
     },
+
     {
-      "name": "Admin",
-      "description": "Administracion — solo accesible con rol ADMIN",
+      "name": "🏪 Sellers",
+      "description": "Gestión de tiendas. Requiere rol SELLER para los endpoints /me.\nNOTA: Crear el perfil de tienda es el primer paso para un SELLER antes de publicar productos.",
       "item": [
+
         {
-          "name": "List All Users",
+          "name": "Listar vendedores activos (público)",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/admin/users",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "admin", "users"]
-            }
-          }
+            "url": { "raw": "{{baseUrl}}/api/v1/sellers", "host": ["{{baseUrl}}"], "path": ["api","v1","sellers"] }
+          },
+          "response": [{
+            "name": "200 — Lista de vendedores",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": [\n    {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n      \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"storeName\": \"TechStore Bogotá\",\n      \"description\": \"Vendemos los mejores gadgets de Colombia\",\n      \"nit\": \"900123456-1\",\n      \"logoUrl\": null,\n      \"rating\": 4.8,\n      \"totalSales\": 142,\n      \"active\": true,\n      \"createdAt\": \"2026-06-23T09:00:00\"\n    }\n  ],\n  \"timestamp\": \"2026-06-23T10:50:00\"\n}"
+          }]
         },
+
         {
-          "name": "Toggle User Enabled",
+          "name": "Ver tienda por ID (público)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/sellers/{{sellerId}}", "host": ["{{baseUrl}}"], "path": ["api","v1","sellers","{{sellerId}}"] }
+          },
+          "response": [{
+            "name": "404 — Vendedor no encontrado",
+            "status": "Not Found", "code": 404,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"detail\": \"Vendedor no encontrado\",\n  \"timestamp\": \"2026-06-23T10:50:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Ver mi tienda [SELLER]",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/sellers/me", "host": ["{{baseUrl}}"], "path": ["api","v1","sellers","me"] }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('sellerId', res.data.id);",
+              "  console.log('✅ sellerId guardado:', res.data.id);",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": []
+        },
+
+        {
+          "name": "Actualizar mi tienda [SELLER]",
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/admin/users/{{userId}}/enable",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "admin", "users", "{{userId}}", "enable"]
+            "url": { "raw": "{{baseUrl}}/api/v1/sellers/me", "host": ["{{baseUrl}}"], "path": ["api","v1","sellers","me"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeName\": \"TechStore Bogotá\",\n  \"description\": \"Los mejores gadgets y electrónica de Colombia\",\n  \"nit\": \"900123456-1\",\n  \"logoUrl\": \"https://res.cloudinary.com/whatshop/logo-techstore.png\"\n}"
             }
-          }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Mis productos [SELLER]",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sellers/me/products?page=0&size=10",
+              "host": ["{{baseUrl}}"], "path": ["api","v1","sellers","me","products"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "❌ Ver mi tienda sin perfil [SELLER]",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/sellers/me", "host": ["{{baseUrl}}"], "path": ["api","v1","sellers","me"] }
+          },
+          "response": [{
+            "name": "404 — Sin perfil de vendedor",
+            "status": "Not Found", "code": 404,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"detail\": \"Perfil de vendedor no encontrado\",\n  \"timestamp\": \"2026-06-23T10:50:00\"\n}"
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "🏷️ Categories",
+      "description": "Categorías del catálogo. El slug se genera automáticamente desde el nombre.",
+      "item": [
+
+        {
+          "name": "Listar categorías (público)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/categories", "host": ["{{baseUrl}}"], "path": ["api","v1","categories"] }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data && res.data.length > 0) {",
+              "  pm.collectionVariables.set('categoryId', res.data[0].id);",
+              "  console.log('✅ categoryId guardado:', res.data[0].id, '-', res.data[0].name);",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": [{
+            "name": "200 — Lista de categorías",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": [\n    { \"id\": \"770e8400-e29b-41d4-a716-446655440001\", \"name\": \"Electrónica\", \"slug\": \"electronica\", \"imageUrl\": null },\n    { \"id\": \"770e8400-e29b-41d4-a716-446655440002\", \"name\": \"Ropa\", \"slug\": \"ropa\", \"imageUrl\": null },\n    { \"id\": \"770e8400-e29b-41d4-a716-446655440003\", \"name\": \"Hogar\", \"slug\": \"hogar\", \"imageUrl\": null }\n  ],\n  \"timestamp\": \"2026-06-23T11:00:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Crear categoría",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/categories", "host": ["{{baseUrl}}"], "path": ["api","v1","categories"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mascotas\",\n  \"imageUrl\": \"https://res.cloudinary.com/whatshop/cat-mascotas.png\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('categoryId', res.data.id);",
+              "  console.log('✅ Categoría creada, slug:', res.data.slug);",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": [{
+            "name": "201 — Categoría creada",
+            "status": "Created", "code": 201,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Categoria creada exitosamente\",\n  \"data\": {\n    \"id\": \"770e8400-e29b-41d4-a716-446655440009\",\n    \"name\": \"Mascotas\",\n    \"slug\": \"mascotas\",\n    \"imageUrl\": \"https://res.cloudinary.com/whatshop/cat-mascotas.png\"\n  },\n  \"timestamp\": \"2026-06-23T11:00:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "❌ Crear categoría duplicada",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/categories", "host": ["{{baseUrl}}"], "path": ["api","v1","categories"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electrónica\"\n}"
+            }
+          },
+          "response": [{
+            "name": "400 — Categoría ya existe",
+            "status": "Bad Request", "code": 400,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"La categoría ya existe\",\n  \"timestamp\": \"2026-06-23T11:00:00\"\n}"
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "📦 Products",
+      "description": "Catálogo de productos con filtros, paginación y búsqueda.\nCRUD completo para SELLER. Eliminación es soft delete (status=DELETED).",
+      "item": [
+
+        {
+          "name": "Listar productos (público)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?page=0&size=10",
+              "host": ["{{baseUrl}}"], "path": ["api","v1","products"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "categoryId", "value": "", "disabled": true, "description": "UUID de la categoría" },
+                { "key": "minPrice", "value": "", "disabled": true, "description": "Precio mínimo" },
+                { "key": "maxPrice", "value": "", "disabled": true, "description": "Precio máximo" },
+                { "key": "sellerId", "value": "", "disabled": true, "description": "UUID del vendedor" },
+                { "key": "search", "value": "", "disabled": true, "description": "Texto a buscar en nombre" }
+              ]
+            }
+          },
+          "response": [{
+            "name": "200 — Página de productos",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": {\n    \"content\": [\n      {\n        \"id\": \"880e8400-e29b-41d4-a716-446655440001\",\n        \"sellerId\": \"660e8400-e29b-41d4-a716-446655440001\",\n        \"sellerStoreName\": \"TechStore Bogotá\",\n        \"categoryId\": \"770e8400-e29b-41d4-a716-446655440001\",\n        \"categoryName\": \"Electrónica\",\n        \"name\": \"Audífonos Samsung Galaxy Buds2\",\n        \"description\": \"Audífonos inalámbricos con cancelación de ruido activa\",\n        \"price\": 189900.00,\n        \"stock\": 15,\n        \"imageUrl\": null,\n        \"status\": \"ACTIVE\",\n        \"rating\": 0.0,\n        \"createdAt\": \"2026-06-23T11:10:00\",\n        \"updatedAt\": \"2026-06-23T11:10:00\"\n      }\n    ],\n    \"page\": 0,\n    \"size\": 10,\n    \"totalElements\": 1,\n    \"totalPages\": 1,\n    \"last\": true\n  },\n  \"timestamp\": \"2026-06-23T11:15:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Listar con filtros — por categoría",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?categoryId={{categoryId}}&page=0&size=10",
+              "host": ["{{baseUrl}}"], "path": ["api","v1","products"],
+              "query": [
+                { "key": "categoryId", "value": "{{categoryId}}" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Listar con filtros — por rango de precio",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?minPrice=50000&maxPrice=200000&page=0&size=10",
+              "host": ["{{baseUrl}}"], "path": ["api","v1","products"],
+              "query": [
+                { "key": "minPrice", "value": "50000" },
+                { "key": "maxPrice", "value": "200000" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Buscar productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/search?q=samsung&page=0&size=10",
+              "host": ["{{baseUrl}}"], "path": ["api","v1","products","search"],
+              "query": [
+                { "key": "q", "value": "samsung" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Ver producto por ID (público)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","v1","products","{{productId}}"] }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Crear producto [SELLER]",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/products", "host": ["{{baseUrl}}"], "path": ["api","v1","products"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"name\": \"Audífonos Samsung Galaxy Buds2\",\n  \"description\": \"Audífonos inalámbricos con cancelación de ruido activa y 29h de batería\",\n  \"price\": 189900.00,\n  \"stock\": 15,\n  \"imageUrl\": \"https://res.cloudinary.com/whatshop/samsung-buds2.jpg\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "if (res.success && res.data) {",
+              "  pm.collectionVariables.set('productId', res.data.id);",
+              "  console.log('✅ Producto creado, ID:', res.data.id);",
+              "  pm.test('Producto creado', () => pm.response.to.have.status(201));",
+              "}"
+            ], "type": "text/javascript" }
+          }],
+          "response": [{
+            "name": "201 — Producto creado",
+            "status": "Created", "code": 201,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Producto creado exitosamente\",\n  \"data\": {\n    \"id\": \"880e8400-e29b-41d4-a716-446655440001\",\n    \"sellerId\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"sellerStoreName\": \"TechStore Bogotá\",\n    \"categoryId\": \"770e8400-e29b-41d4-a716-446655440001\",\n    \"categoryName\": \"Electrónica\",\n    \"name\": \"Audífonos Samsung Galaxy Buds2\",\n    \"description\": \"Audífonos inalámbricos con cancelación de ruido activa y 29h de batería\",\n    \"price\": 189900.00,\n    \"stock\": 15,\n    \"imageUrl\": \"https://res.cloudinary.com/whatshop/samsung-buds2.jpg\",\n    \"status\": \"ACTIVE\",\n    \"rating\": 0.0,\n    \"createdAt\": \"2026-06-23T11:10:00\",\n    \"updatedAt\": \"2026-06-23T11:10:00\"\n  },\n  \"timestamp\": \"2026-06-23T11:10:00\"\n}"
+          }, {
+            "name": "400 — Sin perfil de vendedor",
+            "status": "Bad Request", "code": 400,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"Debes tener un perfil de vendedor para crear productos\",\n  \"timestamp\": \"2026-06-23T11:10:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Editar producto [SELLER]",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","v1","products","{{productId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 175000.00,\n  \"stock\": 20,\n  \"description\": \"Audífonos inalámbricos con cancelación de ruido activa - OFERTA\"\n}"
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Eliminar producto (soft delete) [SELLER]",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","v1","products","{{productId}}"] }
+          },
+          "response": [{
+            "name": "200 — Eliminado (soft delete)",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Producto eliminado exitosamente\",\n  \"data\": null,\n  \"timestamp\": \"2026-06-23T11:20:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "❌ Editar producto ajeno [SELLER]",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","v1","products","{{productId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1.00\n}"
+            }
+          },
+          "response": [{
+            "name": "400 — No te pertenece",
+            "status": "Bad Request", "code": 400,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Bad Request\",\n  \"status\": 400,\n  \"detail\": \"No puedes modificar un producto que no te pertenece\",\n  \"timestamp\": \"2026-06-23T11:20:00\"\n}"
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "⚙️ Admin",
+      "description": "Panel de administración. Requiere rol ROLE_ADMIN.\nUsar 'Login Admin (init.sql)' del módulo Auth para obtener token.",
+      "item": [
+
+        {
+          "name": "Listar todos los usuarios [ADMIN]",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api","v1","admin","users"] }
+          },
+          "response": [{
+            "name": "200 — Lista completa de usuarios",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Operación exitosa\",\n  \"data\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"email\": \"admin@whatshop.com\",\n      \"fullName\": \"Administrador WhatShop\",\n      \"phone\": \"+573000000000\",\n      \"role\": \"ROLE_ADMIN\",\n      \"enabled\": true,\n      \"createdAt\": \"2026-06-23T09:00:00\"\n    }\n  ],\n  \"timestamp\": \"2026-06-23T11:30:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "Activar / Desactivar usuario [ADMIN]",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/enable", "host": ["{{baseUrl}}"], "path": ["api","v1","admin","users","{{userId}}","enable"] }
+          },
+          "response": [{
+            "name": "200 — Estado actualizado",
+            "status": "OK", "code": 200,
+            "body": "{\n  \"success\": true,\n  \"message\": \"Estado de usuario actualizado\",\n  \"data\": null,\n  \"timestamp\": \"2026-06-23T11:30:00\"\n}"
+          }]
+        },
+
+        {
+          "name": "❌ Acceso sin ser ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api","v1","admin","users"] }
+          },
+          "response": [{
+            "name": "403 — Sin permisos",
+            "status": "Forbidden", "code": 403,
+            "body": "{\n  \"type\": \"about:blank\",\n  \"title\": \"Forbidden\",\n  \"status\": 403,\n  \"detail\": \"No tienes permisos para acceder a este recurso\",\n  \"timestamp\": \"2026-06-23T11:30:00\"\n}"
+          }]
         }
       ]
     }
+
   ]
 }
