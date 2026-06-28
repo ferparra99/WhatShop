@@ -340,6 +340,9 @@ ng build && npx cap sync
 8. Los `Controller` **nunca** tienen anotaciones Swagger — implementan las interfaces `*API` y quedan limpios
 9. Todos los métodos de `Controller` deben tener **JavaDoc** explicando parámetros, retorno y excepciones
 
+### Mantenimiento de este documento
+10. `PROJECT.md` es la fuente de verdad del proyecto. Debe actualizarse cada vez que se realice un cambio significativo en la arquitectura, endpoints, entidades, dependencias o configuraciones.
+
 ---
 
 ## Historial de cambios
