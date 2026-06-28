@@ -19,8 +19,25 @@ public interface AuthAPI {
     @Operation(summary = "Registrar nuevo usuario", description = """
             Crea una cuenta nueva en el sistema. El rol determina los permisos:
             - **BUYER**: puede navegar y comprar productos
-            - **SELLER**: puede gestionar su tienda y productos
-            - **ADMIN**: acceso total al sistema
+            - **SELLER**: puede gestionar su tienda y productos *(requiere store.storeName)*
+            - **ADMIN**: acceso total al sistema *(store opcional)*
+
+            **Ejemplo SELLER:**
+            ```json
+            {
+              "email": "vendedor@example.com",
+              "password": "Vendedor123",
+              "fullName": "Maria Gonzalez",
+              "phone": "+573109876543",
+              "role": "SELLER",
+              "store": {
+                "storeName": "Tienda de Maria",
+                "description": "Productos artesanales",
+                "nit": "900123456-7",
+                "logoUrl": "https://ejemplo.com/logo.png"
+              }
+            }
+            ```
 
             Devuelve un token JWT para autenticarse automaticamente.
             """)
