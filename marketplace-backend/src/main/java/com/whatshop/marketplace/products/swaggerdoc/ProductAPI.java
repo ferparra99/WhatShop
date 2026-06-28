@@ -55,7 +55,7 @@ public interface ProductAPI {
     })
     ResponseEntity<ApiResponse<?>> searchProducts(@RequestParam String q, Pageable pageable);
 
-    @Operation(summary = "Crear un producto", description = "Crea un nuevo producto. Requiere rol **SELLER**. El vendedor debe tener un perfil de tienda creado previamente.")
+    @Operation(summary = "Crear un producto", description = "Crea un nuevo producto. Requiere rol **SELLER** o **ADMIN**. El vendedor debe tener un perfil de tienda creado previamente.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos o perfil de vendedor inexistente", content = @Content)
@@ -65,7 +65,7 @@ public interface ProductAPI {
             @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody CreateProductRequest request);
 
-    @Operation(summary = "Editar un producto", description = "Actualiza los datos de un producto existente. Solo el vendedor propietario puede editarlo. Requiere rol **SELLER**.")
+    @Operation(summary = "Editar un producto", description = "Actualiza los datos de un producto existente. Solo el vendedor propietario o **ADMIN** pueden editarlo. Requiere rol **SELLER** o **ADMIN**.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Producto actualizado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "No podes editar un producto que no te pertenece", content = @Content),
@@ -77,7 +77,7 @@ public interface ProductAPI {
             @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateProductRequest request);
 
-    @Operation(summary = "Eliminar un producto (soft delete)", description = "Marca un producto como eliminado (no se borra de la base de datos). Solo el vendedor propietario puede eliminar sus productos. Requiere rol **SELLER**.")
+    @Operation(summary = "Eliminar un producto (soft delete)", description = "Marca un producto como eliminado (no se borra de la base de datos). Solo el vendedor propietario o **ADMIN** pueden eliminar productos. Requiere rol **SELLER** o **ADMIN**.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Producto eliminado"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "No podes eliminar un producto que no te pertenece", content = @Content)

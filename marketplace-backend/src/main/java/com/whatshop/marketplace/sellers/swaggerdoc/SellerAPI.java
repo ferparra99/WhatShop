@@ -32,7 +32,7 @@ public interface SellerAPI {
     })
     ResponseEntity<ApiResponse<?>> getSellerById(@PathVariable UUID id);
 
-    @Operation(summary = "Ver mi perfil de vendedor", description = "Devuelve el perfil completo de la tienda del vendedor autenticado. Requiere rol **SELLER**.")
+    @Operation(summary = "Ver mi perfil de vendedor", description = "Devuelve el perfil completo de la tienda del vendedor autenticado. Requiere rol **SELLER** o **ADMIN**.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Perfil del vendedor"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content),
@@ -41,7 +41,7 @@ public interface SellerAPI {
     @SecurityRequirement(name = "bearer-jwt")
     ResponseEntity<ApiResponse<?>> getMyProfile(@org.springframework.security.core.annotation.AuthenticationPrincipal User user);
 
-    @Operation(summary = "Actualizar mi tienda", description = "Actualiza los datos de la tienda del vendedor autenticado (nombre, descripcion, NIT, logo). Requiere rol **SELLER**.")
+    @Operation(summary = "Actualizar mi tienda", description = "Actualiza los datos de la tienda del vendedor autenticado (nombre, descripcion, NIT, logo). Requiere rol **SELLER** o **ADMIN**.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Tienda actualizada"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos o nombre de tienda duplicado", content = @Content)
@@ -51,7 +51,7 @@ public interface SellerAPI {
             @org.springframework.security.core.annotation.AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateSellerRequest request);
 
-    @Operation(summary = "Listar mis productos", description = "Devuelve los productos del vendedor autenticado con paginacion. Requiere rol **SELLER**.")
+    @Operation(summary = "Listar mis productos", description = "Devuelve los productos del vendedor autenticado con paginacion. Requiere rol **SELLER** o **ADMIN**.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Listado paginado de mis productos"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "No tenes rol SELLER", content = @Content)

@@ -3,7 +3,9 @@ com\whatshop\marketplace\products\swaggerdoc\CategoryAPI.class
 com\whatshop\marketplace\sellers\entity\Seller$SellerBuilder.class
 com\whatshop\marketplace\auth\entity\User.class
 com\whatshop\marketplace\users\dto\UpdateUserRequest.class
+com\whatshop\marketplace\sellers\service\SellerServiceImpl.class
 com\whatshop\marketplace\products\entity\Product$ProductBuilder.class
+com\whatshop\marketplace\users\service\UserServiceImpl.class
 com\whatshop\marketplace\products\repository\CategoryRepository.class
 com\whatshop\marketplace\shared\response\ApiResponse$ApiResponseBuilder.class
 com\whatshop\marketplace\sellers\controller\SellerController.class
@@ -13,6 +15,7 @@ com\whatshop\marketplace\auth\dto\AuthResponse$AuthResponseBuilder.class
 com\whatshop\marketplace\auth\dto\AuthResponse.class
 com\whatshop\marketplace\products\entity\Category$CategoryBuilder.class
 com\whatshop\marketplace\products\repository\ProductRepository.class
+com\whatshop\marketplace\products\service\CategoryServiceImpl.class
 com\whatshop\marketplace\shared\exception\GlobalExceptionHandler.class
 com\whatshop\marketplace\products\swaggerdoc\ProductAPI.class
 com\whatshop\marketplace\config\LoggingAspect.class
@@ -20,10 +23,12 @@ com\whatshop\marketplace\products\controller\CategoryController.class
 com\whatshop\marketplace\shared\exception\UnauthorizedException.class
 com\whatshop\marketplace\auth\entity\User$UserBuilder.class
 com\whatshop\marketplace\auth\swaggerdoc\AdminAPI.class
+com\whatshop\marketplace\auth\dto\RegisterRequest$StoreInfo.class
 com\whatshop\marketplace\products\dto\ProductPageResponse$ProductPageResponseBuilder.class
 com\whatshop\marketplace\auth\service\JwtUtil.class
 com\whatshop\marketplace\shared\exception\BadRequestException.class
 com\whatshop\marketplace\sellers\entity\Seller.class
+com\whatshop\marketplace\auth\service\AuthServiceImpl.class
 com\whatshop\marketplace\config\SecurityConfig.class
 com\whatshop\marketplace\MarketplaceApplication.class
 com\whatshop\marketplace\sellers\swaggerdoc\SellerAPI.class
@@ -50,6 +55,7 @@ com\whatshop\marketplace\users\service\UserService.class
 com\whatshop\marketplace\auth\controller\AuthController.class
 com\whatshop\marketplace\auth\service\AuthUserDetailsService.class
 com\whatshop\marketplace\products\entity\ProductStatus.class
+com\whatshop\marketplace\products\service\ProductServiceImpl.class
 com\whatshop\marketplace\users\swaggerdoc\UserAPI.class
 com\whatshop\marketplace\users\dto\UserProfileDTO.class
 com\whatshop\marketplace\products\entity\Category.class

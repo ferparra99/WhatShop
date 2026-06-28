@@ -31,4 +31,22 @@ public class RegisterRequest {
     @Schema(description = "Rol del usuario", example = "BUYER", allowableValues = {"BUYER", "SELLER", "ADMIN"})
     @NotBlank(message = "El rol es obligatorio")
     private String role;
+
+    @Schema(description = "Datos de la tienda (obligatorio si rol=SELLER)")
+    private StoreInfo store;
+
+    @Data
+    public static class StoreInfo {
+        @Schema(description = "Nombre de la tienda", example = "Tienda de María")
+        private String storeName;
+
+        @Schema(description = "Descripción de la tienda")
+        private String description;
+
+        @Schema(description = "NIT del vendedor")
+        private String nit;
+
+        @Schema(description = "URL del logo")
+        private String logoUrl;
+    }
 }

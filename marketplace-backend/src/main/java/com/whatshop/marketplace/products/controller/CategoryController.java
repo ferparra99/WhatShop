@@ -6,6 +6,7 @@ import com.whatshop.marketplace.shared.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -39,6 +40,7 @@ public class CategoryController implements CategoryAPI {
      * @return 201 CREATED con la categoria creada
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> createCategory(@RequestBody Map<String, String> body) {
         var name = body.get("name");

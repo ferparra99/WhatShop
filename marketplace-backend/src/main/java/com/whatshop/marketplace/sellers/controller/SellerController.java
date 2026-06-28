@@ -61,10 +61,10 @@ public class SellerController implements SellerAPI {
      * @return 200 OK con perfil de la tienda
      */
     @GetMapping("/me")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> getMyProfile(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(ApiResponse.success(sellerService.getMyProfile(user.getId())));
+        return ResponseEntity.ok(ApiResponse.success(sellerService.getMyProfile(user)));
     }
 
     /**
@@ -75,12 +75,12 @@ public class SellerController implements SellerAPI {
      * @return 200 OK con tienda actualizada
      */
     @PutMapping("/me")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> updateMyProfile(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateSellerRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(sellerService.updateMyProfile(user.getId(), request)));
+        return ResponseEntity.ok(ApiResponse.success(sellerService.updateMyProfile(user, request)));
     }
 
     /**
@@ -91,11 +91,11 @@ public class SellerController implements SellerAPI {
      * @return 200 OK con listado paginado de productos
      */
     @GetMapping("/me/products")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> listMyProducts(
             @AuthenticationPrincipal User user,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(productService.listMyProducts(user.getId(), pageable)));
+        return ResponseEntity.ok(ApiResponse.success(productService.listMyProducts(user, pageable)));
     }
 }

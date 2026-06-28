@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,11 +92,12 @@ public class ProductController implements ProductAPI {
      * @return 201 CREATED con el producto creado
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> createProduct(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody CreateProductRequest request) {
-        var product = productService.createProduct(user.getId(), request);
+        var product = productService.createProduct(user, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(product, "Producto creado exitosamente"));
     }
@@ -110,13 +112,14 @@ public class ProductController implements ProductAPI {
      * @return 200 OK con producto actualizado
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> updateProduct(
             @PathVariable UUID id,
             @AuthenticationPrincipal User user,
             @Valid @RequestBody UpdateProductRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
-                productService.updateProduct(id, user.getId(), request), "Producto actualizado exitosamente"));
+                productService.updateProduct(id, user, request), "Producto actualizado exitosamente"));
     }
 
     /**
@@ -128,11 +131,12 @@ public class ProductController implements ProductAPI {
      * @return 200 OK con mensaje de confirmacion
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<?>> deleteProduct(
             @PathVariable UUID id,
             @AuthenticationPrincipal User user) {
-        productService.deleteProduct(id, user.getId());
+        productService.deleteProduct(id, user);
         return ResponseEntity.ok(ApiResponse.success(null, "Producto eliminado exitosamente"));
     }
 }
