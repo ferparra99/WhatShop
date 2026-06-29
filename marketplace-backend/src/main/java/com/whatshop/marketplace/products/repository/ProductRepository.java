@@ -23,13 +23,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
            "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
            "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
            "AND (:sellerId IS NULL OR p.seller.id = :sellerId) " +
-           "AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')))")
+           "AND (:pattern IS NULL OR LOWER(p.name) LIKE LOWER(:pattern))")
     Page<Product> searchProducts(
             @Param("categoryId") UUID categoryId,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice,
             @Param("sellerId") UUID sellerId,
-            @Param("search") String search,
+            @Param("pattern") String pattern,
             Pageable pageable);
 
     List<Product> findBySellerId(UUID sellerId);

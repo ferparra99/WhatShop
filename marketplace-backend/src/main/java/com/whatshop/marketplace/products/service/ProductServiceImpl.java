@@ -10,6 +10,7 @@ import com.whatshop.marketplace.products.entity.Product;
 import com.whatshop.marketplace.products.entity.ProductStatus;
 import com.whatshop.marketplace.products.repository.CategoryRepository;
 import com.whatshop.marketplace.products.repository.ProductRepository;
+import com.whatshop.marketplace.sellers.entity.Seller;
 import com.whatshop.marketplace.sellers.repository.SellerRepository;
 import com.whatshop.marketplace.shared.exception.BadRequestException;
 import com.whatshop.marketplace.shared.exception.ResourceNotFoundException;
@@ -32,7 +33,8 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductPageResponse listProducts(UUID categoryId, BigDecimal minPrice, BigDecimal maxPrice,
                                             UUID sellerId, String search, Pageable pageable) {
-        var page = productRepository.searchProducts(categoryId, minPrice, maxPrice, sellerId, search, pageable);
+        String pattern = "%" + (search != null ? search : "") + "%";
+        var page = productRepository.searchProducts(categoryId, minPrice, maxPrice, sellerId, pattern, pageable);
         return toPageResponse(page);
     }
 
@@ -47,10 +49,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public ProductDTO createProduct(User user, CreateProductRequest request) {
-        var sellerPrueba = sellerRepository.findByUserId(user.getId());
-        System.out.println(sellerPrueba);
         var seller = sellerRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new BadRequestException("Debes tener un perfil de vendedor para crear productos"));
+                .orElseGet(() -> {
+                    if (user.getRole() != Role.ROLE_ADMIN) {
+                        throw new BadRequestException("Debes tener un perfil de vendedor para crear productos");
+                    }
+                    var defaultSeller = Seller.builder()
+                            .user(user)
+                            .storeName("Tienda Admin - " + user.getFullName())
+                            .build();
+                    return sellerRepository.save(defaultSeller);
+                });
 
         var category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));

@@ -32,7 +32,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String name;
 
     @Column(columnDefinition = "TEXT")
