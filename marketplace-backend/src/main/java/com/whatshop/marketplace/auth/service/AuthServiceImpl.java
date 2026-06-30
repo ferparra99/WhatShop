@@ -45,13 +45,17 @@ public class AuthServiceImpl implements AuthService {
                 .role(role)
                 .build();
 
-        userRepository.save(user);
-
         if (role == Role.ROLE_SELLER) {
             var store = request.getStore();
             if (store == null || store.getStoreName() == null || store.getStoreName().isBlank()) {
                 throw new BadRequestException("El nombre de tienda es obligatorio para rol SELLER");
             }
+        }
+
+        userRepository.save(user);
+
+        if (role == Role.ROLE_SELLER) {
+            var store = request.getStore();
             sellerService.createSellerProfile(
                     user,
                     store.getStoreName(),

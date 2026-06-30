@@ -1,6 +1,8 @@
 package com.whatshop.marketplace.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -33,11 +35,21 @@ public class RegisterRequest {
     private String role;
 
     @Schema(description = "Datos de la tienda (obligatorio si rol=SELLER)")
+    @Valid
     private StoreInfo store;
+
+    @AssertTrue(message = "El nombre de tienda es obligatorio para rol SELLER")
+    private boolean isStoreValid() {
+        if ("SELLER".equalsIgnoreCase(role)) {
+            return store != null && store.getStoreName() != null && !store.getStoreName().isBlank();
+        }
+        return true;
+    }
 
     @Data
     public static class StoreInfo {
         @Schema(description = "Nombre de la tienda", example = "Tienda de María")
+        @NotBlank(message = "El nombre de tienda es obligatorio")
         private String storeName;
 
         @Schema(description = "Descripción de la tienda")
