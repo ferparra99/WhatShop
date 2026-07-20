@@ -50,16 +50,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDTO createProduct(User user, CreateProductRequest request) {
         var seller = sellerRepository.findByUserId(user.getId())
-                .orElseGet(() -> {
-                    if (user.getRole() != Role.ROLE_ADMIN) {
-                        throw new BadRequestException("Debes tener un perfil de vendedor para crear productos");
-                    }
-                    var defaultSeller = Seller.builder()
-                            .user(user)
-                            .storeName("Tienda Admin - " + user.getFullName())
-                            .build();
-                    return sellerRepository.save(defaultSeller);
-                });
+                .orElseThrow(() -> new BadRequestException("Debes tener un perfil de vendedor para crear productos"));
 
         var category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));

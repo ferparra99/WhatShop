@@ -47,16 +47,16 @@ public class AuthServiceImpl implements AuthService {
                 .role(role)
                 .build();
 
-        if (role == Role.ROLE_SELLER) {
+        if (role == Role.ROLE_SELLER || role == Role.ROLE_ADMIN) {
             var store = request.getStore();
             if (store == null || store.getStoreName() == null || store.getStoreName().isBlank()) {
-                throw new BadRequestException("El nombre de tienda es obligatorio para rol SELLER");
+                throw new BadRequestException("El nombre de tienda es obligatorio para rol " + request.getRole().toUpperCase());
             }
         }
 
         userRepository.save(user);
 
-        if (role == Role.ROLE_SELLER) {
+        if (role == Role.ROLE_SELLER || role == Role.ROLE_ADMIN) {
             var store = request.getStore();
             sellerService.createSellerProfile(
                     user,
@@ -64,15 +64,6 @@ public class AuthServiceImpl implements AuthService {
                     store.getDescription(),
                     store.getNit(),
                     store.getLogoUrl());
-        } else if (role == Role.ROLE_ADMIN && request.getStore() != null
-                && request.getStore().getStoreName() != null
-                && !request.getStore().getStoreName().isBlank()) {
-            sellerService.createSellerProfile(
-                    user,
-                    request.getStore().getStoreName(),
-                    request.getStore().getDescription(),
-                    request.getStore().getNit(),
-                    request.getStore().getLogoUrl());
         }
 
         var token = jwtUtil.generateToken(user.getId(), user.getEmail());
