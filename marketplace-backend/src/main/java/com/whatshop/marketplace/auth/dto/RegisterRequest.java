@@ -38,9 +38,9 @@ public class RegisterRequest {
     @Valid
     private StoreInfo store;
 
-    @AssertTrue(message = "El nombre de tienda es obligatorio para rol SELLER")
+    @AssertTrue(message = "El nombre de tienda es obligatorio para rol SELLER y ADMIN")
     private boolean isStoreValid() {
-        if ("SELLER".equalsIgnoreCase(role)) {
+        if ("SELLER".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
             return store != null && store.getStoreName() != null && !store.getStoreName().isBlank();
         }
         return true;
