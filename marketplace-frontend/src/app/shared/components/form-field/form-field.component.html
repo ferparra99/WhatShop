@@ -1,0 +1,46 @@
+<div class="field">
+  <label class="field__label">
+    {{ label() }}
+    @if (required()) {
+      <span class="field__required" aria-hidden="true">*</span>
+    }
+  </label>
+
+  <div
+    class="field__row"
+    [class.field__row--prefixed]="prefix()"
+    [class.field__row--invalid]="invalid()"
+  >
+    @if (prefix()) {
+      <span class="field__prefix">{{ prefix() }}</span>
+    }
+
+    <div class="field__input-wrap">
+      @if (icon()) {
+        <i class="field__icon pi" [ngClass]="icon()" aria-hidden="true"></i>
+      }
+      <input
+        class="field__input"
+        [class.field__input--invalid]="invalid()"
+        [type]="inputType"
+        [placeholder]="placeholder()"
+        [value]="value"
+        (input)="onInput($event)"
+      />
+      @if (eyeToggle()) {
+        <button
+          class="field__eye"
+          type="button"
+          aria-label="Mostrar contraseña"
+          (click)="togglePassword()"
+        >
+          <i class="pi" [ngClass]="eyeIcon"></i>
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (invalid() && error()) {
+    <p class="field__error" role="alert">{{ error() }}</p>
+  }
+</div>

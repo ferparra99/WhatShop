@@ -1,0 +1,138 @@
+<app-top-bar [title]="'WhatShop'" [showBack]="true" [showMenu]="true"></app-top-bar>
+
+<app-auth-layout>
+  <main class="register">
+    <div class="register__container">
+      <!-- Header Section -->
+      <section class="register__header">
+        <h1 class="register__heading">Únete a WhatShop</h1>
+        <p class="register__subtitle">
+          Comienza a comprar y vender de forma segura con el respaldo de nuestra comunidad.
+        </p>
+      </section>
+
+      <!-- Main Form Card -->
+      <section class="register__card">
+        <form [formGroup]="form" class="register__form" (ngSubmit)="onRegister()">
+          <app-form-field
+            formControlName="fullName"
+            label="Nombre completo"
+            icon="pi-user"
+            placeholder="Alex Morgan"
+            [required]="true"
+            [invalid]="form.controls.fullName.touched && form.controls.fullName.invalid"
+            [error]="errorFor(form.controls.fullName)"
+          ></app-form-field>
+
+          <app-form-field
+            formControlName="email"
+            label="Correo electrónico"
+            type="email"
+            icon="pi-envelope"
+            placeholder="alex@marketapp.com"
+            [required]="true"
+            [invalid]="form.controls.email.touched && form.controls.email.invalid"
+            [error]="errorFor(form.controls.email)"
+          ></app-form-field>
+
+          <div class="register__row">
+            <app-form-field
+              class="register__phone"
+              formControlName="phone"
+              label="Teléfono"
+              type="tel"
+              icon="pi-phone"
+              prefix="+57"
+              placeholder="300 123 4567"
+              [required]="true"
+              [invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+              [error]="errorFor(form.controls.phone)"
+            ></app-form-field>
+          </div>
+
+          <app-form-field
+            formControlName="password"
+            label="Contraseña"
+            type="password"
+            icon="pi-lock"
+            placeholder="••••••••"
+            [eyeToggle]="true"
+            [required]="true"
+            [invalid]="form.controls.password.touched && form.controls.password.invalid"
+            [error]="errorFor(form.controls.password)"
+          ></app-form-field>
+
+          <!-- Seller toggle -->
+          <div class="seller-toggle" (click)="toggleSeller()">
+            <div class="seller-toggle__info">
+              <i class="pi pi-shop seller-toggle__icon"></i>
+              <span class="seller-toggle__text">¿Quieres vender?</span>
+            </div>
+            <div class="seller-toggle__switch" [class.seller-toggle__switch--on]="isSeller()">
+              <span class="seller-toggle__knob"></span>
+            </div>
+          </div>
+
+          <!-- Expanded seller section -->
+          @if (isSeller()) {
+            <section class="seller-section">
+              <div class="seller-section__divider"></div>
+
+              <app-form-field
+                formControlName="businessName"
+                label="Nombre del negocio"
+                placeholder="Morgan Shop S.A.S."
+                [required]="true"
+                [invalid]="form.controls.businessName.touched && form.controls.businessName.invalid"
+                [error]="errorFor(form.controls.businessName)"
+              ></app-form-field>
+
+              <app-form-field
+                formControlName="nit"
+                label="NIT"
+                placeholder="900.123.456-7"
+              ></app-form-field>
+            </section>
+          }
+
+          @if (error()) {
+            <p class="register__error" role="alert">{{ error() }}</p>
+          }
+
+          <!-- CTA Section -->
+          <section class="register__cta">
+            <button class="cta-button" type="submit" [disabled]="loading()">
+              <span class="cta-button__text">{{ loading() ? 'Creando cuenta...' : 'Crear cuenta' }}</span>
+              <i class="pi pi-arrow-right cta-button__icon"></i>
+            </button>
+
+            <p class="register__login-link">
+              ¿Ya tienes cuenta?&nbsp;<a routerLink="/login">Inicia sesión</a>
+            </p>
+          </section>
+        </form>
+      </section>
+
+      <!-- Trust Badges -->
+      <section class="trust-badges">
+        <div class="trust-badges__item trust-badges__item--left">
+          <i class="pi pi-lock trust-badges__icon"></i>
+          <span class="trust-badges__text">Pagos seguros</span>
+        </div>
+        <div class="trust-badges__item trust-badges__item--right">
+          <i class="pi pi-truck trust-badges__icon"></i>
+          <span class="trust-badges__text">Entrega rápida</span>
+        </div>
+        <div class="trust-badges__item trust-badges__item--center">
+          <i class="pi pi-headphones trust-badges__icon"></i>
+          <span class="trust-badges__text">Soporte 24/7</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer Meta -->
+    <footer class="register__footer">
+      <span>© 2026 WhatShop. Todos los derechos reservados.</span>
+    </footer>
+  </main>
+</app-auth-layout>

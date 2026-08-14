@@ -1,0 +1,98 @@
+<div class="profile">
+  <app-top-bar [title]="'Perfil'" [showBack]="true" [showMenu]="true"></app-top-bar>
+
+  <main class="profile__main">
+    <!-- Profile Header -->
+    <section class="profile__header">
+      <div class="profile__avatar">
+        <img class="profile__avatar-img" [src]="user.avatarUrl" alt="{{ user.name }}" />
+        <div class="profile__avatar-badge">
+          <i class="pi pi-check profile__avatar-badge-icon"></i>
+        </div>
+      </div>
+
+      <div class="profile__identity">
+        <h2 class="profile__name">{{ user.name }}</h2>
+        <p class="profile__email">{{ user.email }}</p>
+
+        <div class="profile__verified">
+          <i class="pi pi-verified profile__verified-icon"></i>
+          <span class="profile__verified-text">{{ user.verified }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seller CTA -->
+    <section class="profile__seller">
+      <div class="profile__seller-head">
+        <span class="profile__seller-dot"></span>
+        <p class="profile__seller-title">¿Quieres vender con nosotros?</p>
+      </div>
+
+      <p class="profile__seller-text">
+        Gestiona tus productos, revisa tus ventas y contacta a tus compradores de forma rápida.
+      </p>
+
+      <button class="profile__seller-button" type="button">
+        <i class="pi pi-shop profile__seller-button-icon"></i>
+        <span class="profile__seller-button-text">Comenzar a vender</span>
+      </button>
+    </section>
+
+    <!-- Links list -->
+    <section class="profile__links">
+      <a class="profile__link" href="#">
+        <span class="profile__link-icon profile__link-icon--lg">
+          <i class="pi pi-shopping-bag"></i>
+        </span>
+        <span class="profile__link-text">Mis Pedidos</span>
+        <i class="pi pi-chevron-right profile__link-arrow"></i>
+      </a>
+
+      <a class="profile__link" href="#">
+        <span class="profile__link-icon profile__link-icon--lg">
+          <i class="pi pi-map-marker"></i>
+        </span>
+        <span class="profile__link-text">Direcciones de Envío</span>
+        <i class="pi pi-chevron-right profile__link-arrow"></i>
+      </a>
+
+      <a class="profile__link" href="#">
+        <span class="profile__link-icon profile__link-icon--md">
+          <i class="pi pi-credit-card"></i>
+        </span>
+        <span class="profile__link-text">Métodos de Pago</span>
+        <i class="pi pi-chevron-right profile__link-arrow"></i>
+      </a>
+
+      <a class="profile__link" href="#">
+        <span class="profile__link-icon profile__link-icon--lg">
+          <i class="pi pi-bell"></i>
+        </span>
+        <span class="profile__link-text">Notificaciones</span>
+        <span class="profile__link-badge">3</span>
+        <i class="pi pi-chevron-right profile__link-arrow"></i>
+      </a>
+
+      <a class="profile__link" href="#">
+        <span class="profile__link-icon profile__link-icon--xl">
+          <i class="pi pi-question-circle"></i>
+        </span>
+        <span class="profile__link-text">Ayuda y Soporte</span>
+        <i class="pi pi-chevron-right profile__link-arrow"></i>
+      </a>
+
+      <button class="profile__logout" type="button" (click)="logout()">
+        <span class="profile__logout-icon">
+          <i class="pi pi-sign-out"></i>
+        </span>
+        <span class="profile__logout-text">Cerrar sesión</span>
+      </button>
+    </section>
+
+    <!-- Footer branding -->
+    <footer class="profile__branding">WhatShop</footer>
+  </main>
+
+  <app-bottom-nav [active]="'profile'"></app-bottom-nav>
+</div>

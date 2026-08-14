@@ -1,0 +1,72 @@
+/* ============================================================
+   WhatShop — Estilos globales
+   Paleta extraída del mockup Figma (WhatShop)
+   ============================================================ */
+
+/* Tipografías: Plus Jakarta Sans (headings/botones) + Inter (cuerpo) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+
+/* PrimeIcons — iconos usados en los formularios */
+@import "primeicons/primeicons.css";
+
+/* ============ Paleta de diseño ============ */
+:root {
+  /* Colores del mockup */
+  --ws-whatsapp-green: #25D366;
+  --ws-teal-green: #075E54;
+  --ws-deep-green: #00471C;
+  --ws-teal-label: #006B5F;
+  --ws-input-bg: #E0E3E6;
+  --ws-placeholder: #6B7280;
+  --ws-text: #3F4946;
+  --ws-muted: #6F7976;
+  --ws-card-bg: rgba(255, 255, 255, 0.85);
+  --ws-surface-toggle: #F2F4F7;
+  --ws-page-bg: #F7F9FC;
+  --ws-button-text: #002109;
+  --ws-border-divider: rgba(190, 201, 197, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ws-text);
+  background-color: var(--ws-page-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fondo con gradientes radiales del mockup */
+body {
+  background:
+    radial-gradient(141.42% 141.42% at 0% 0%, rgba(37, 211, 102, 0.05) 0%, rgba(37, 211, 102, 0) 50%),
+    radial-gradient(141.42% 141.42% at 100% 100%, rgba(7, 94, 84, 0.05) 0%, rgba(7, 94, 84, 0) 50%),
+    var(--ws-page-bg);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  color: var(--ws-deep-green);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}

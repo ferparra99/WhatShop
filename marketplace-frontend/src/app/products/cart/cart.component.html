@@ -1,0 +1,152 @@
+<div class="cart">
+  <app-top-bar [title]="'Mi Carrito'" [showBack]="true" [showMenu]="true"></app-top-bar>
+
+  <main class="cart__main">
+    <!-- ===== Cart Items Section ===== -->
+    <section class="cart__items">
+      <header class="cart__items-header">
+        <h2 class="cart__items-title">{{ countLabel() }}</h2>
+        @if (items().length > 0) {
+          <button class="cart__clear" type="button" (click)="clearCart()">
+            <i class="pi pi-trash cart__clear-icon"></i>
+            <span class="cart__clear-text">Vaciar carrito</span>
+          </button>
+        }
+      </header>
+
+      @if (items().length === 0) {
+        <div class="cart__empty">
+          <i class="pi pi-shopping-cart cart__empty-icon"></i>
+          <p class="cart__empty-text">Tu carrito está vacío</p>
+        </div>
+      }
+
+      @for (item of items(); track item.id) {
+        <article class="cart-item">
+          <div class="cart-item__image-wrap">
+            <img class="cart-item__image" [src]="item.imageUrl" [alt]="item.name" loading="lazy" />
+          </div>
+
+          <div class="cart-item__content">
+            <div class="cart-item__top">
+              <div class="cart-item__info">
+                <span class="cart-item__label">{{ item.label }}</span>
+                <h3 class="cart-item__name">{{ item.name }}</h3>
+              </div>
+              <button class="cart-item__delete" type="button" (click)="remove(item.id)" aria-label="Eliminar producto">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+
+            <div class="cart-item__bottom">
+              <p class="cart-item__price">{{ format(item.price) }}</p>
+
+              <div class="cart-item__stepper">
+                <div class="cart-item__stepper-inner">
+                  <button
+                    class="cart-item__step"
+                    [class.cart-item__step--disabled]="item.quantity === 1"
+                    type="button"
+                    aria-label="Restar cantidad"
+                    [disabled]="item.quantity === 1"
+                    (click)="decrement(item.id)"
+                  >
+                    <i class="pi pi-minus"></i>
+                  </button>
+                  <span class="cart-item__quantity">{{ item.quantity }}</span>
+                  <button
+                    class="cart-item__step"
+                    type="button"
+                    aria-label="Sumar cantidad"
+                    (click)="increment(item.id)"
+                  >
+                    <i class="pi pi-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      }
+
+      <!-- Cross-sell banner -->
+      <section class="cart__cross-sell">
+        <div class="cart__cross-sell-badge">OFERTA</div>
+        <h3 class="cart__cross-sell-title">Envío gratis</h3>
+        <p class="cart__cross-sell-text">
+          Aprovecha el envío gratis en tu próxima compra superior a $300.000 COP.
+        </p>
+        <button class="cart__cross-sell-button" type="button">Ver detalles</button>
+      </section>
+    </section>
+
+    <!-- ===== Order Summary ===== -->
+    <aside class="cart__summary">
+      <h3 class="cart__summary-title">Resumen</h3>
+
+      <!-- Coupon -->
+      <div class="cart__coupon">
+        <label class="cart__coupon-label" for="coupon-input">¿Tienes un cupón?</label>
+        <div class="cart__coupon-row">
+          <input
+            id="coupon-input"
+            class="cart__coupon-input"
+            type="text"
+            placeholder="Ej: BIENVENIDO2024"
+          />
+          <button class="cart__coupon-button" type="button">Aplicar</button>
+        </div>
+      </div>
+
+      <!-- Totals -->
+      <div class="cart__totals">
+        <div class="cart__total-row">
+          <span class="cart__total-label">Subtotal</span>
+          <span class="cart__total-value">{{ format(subtotal()) }}</span>
+        </div>
+
+        <div class="cart__total-row">
+          <span class="cart__total-label">Envío</span>
+          <span class="cart__total-value">{{ format(shippingCost) }}</span>
+        </div>
+
+        <div class="cart__total-row">
+          <span class="cart__total-label">Descuento</span>
+          <span class="cart__total-value cart__total-value--discount">-{{ format(discount) }}</span>
+        </div>
+
+        <div class="cart__grand-total">
+          <div class="cart__grand-total-box">
+            <span class="cart__grand-total-label">Total</span>
+            <div class="cart__grand-total-amount">
+              <span class="cart__grand-total-value">{{ format(total()) }}</span>
+              <span class="cart__grand-total-currency">COP</span>
+            </div>
+          </div>
+
+          <button class="cart__checkout" type="button">
+            <span class="cart__checkout-text">Finalizar compra</span>
+            <i class="pi pi-arrow-right cart__checkout-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment methods -->
+      <div class="cart__payments" aria-label="Métodos de pago">
+        <i class="pi pi-paypal cart__payment-icon"></i>
+        <i class="pi pi-credit-card cart__payment-icon"></i>
+        <i class="pi pi-dollar cart__payment-icon"></i>
+      </div>
+
+      <!-- Security badge -->
+      <div class="cart__security">
+        <i class="pi pi-shield cart__security-icon"></i>
+        <p class="cart__security-text">
+          Compra protegida: tus datos y tu dinero están seguros en cada transacción.
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <app-bottom-nav [active]="'orders'"></app-bottom-nav>
+</div>

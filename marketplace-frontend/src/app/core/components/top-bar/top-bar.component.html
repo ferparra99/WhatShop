@@ -1,0 +1,22 @@
+<header class="top-bar">
+  <button
+    *ngIf="showBack()"
+    class="top-bar__button"
+    type="button"
+    aria-label="Volver"
+    (click)="goBack()"
+  >
+    <i class="pi pi-arrow-left"></i>
+  </button>
+
+  <span class="top-bar__title">{{ title() }}</span>
+
+  <button
+    *ngIf="showMenu()"
+    class="top-bar__button"
+    type="button"
+    aria-label="Menú"
+  >
+    <i class="pi pi-bars"></i>
+  </button>
+</header>

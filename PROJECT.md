@@ -1,5 +1,5 @@
 # MarketApp — Documento de Proyecto
-> **Versión:** 1.0.5 | **Última actualización:** 2026-06-22
+> **Versión:** 1.0.6 | **Última actualización:** 2026-08-13
 > **Para agentes IA:** Este archivo es la fuente de verdad del proyecto. Cada módulo tiene su estado, dependencias, entidades y endpoints definidos. Antes de generar código, consultá este archivo para respetar la arquitectura acordada.
 
 ---
@@ -79,13 +79,24 @@ marketplace/
 │           └── dto/                          ✅ ProductDTO, CreateProductRequest,
 │                                                UpdateProductRequest, ProductPageResponse
 │
-└── marketplace-frontend/                     ⬜ Por crear
-    └── src/app/
-        ├── core/
-        ├── shared/
-        ├── auth/
-        ├── products/
-        └── seller/
+└── marketplace-frontend/                     ✅ Creado (v1.0.6 — auth conectado)
+    └── src/
+        ├── environments/
+        │   └── environment.ts                 ✅ apiUrl del backend
+        └── app/
+            ├── core/                          ✅ Núcleo transversal
+            │   ├── models/                    ✅ api-response.ts, auth.ts
+            │   ├── services/                  ✅ token-storage, auth.service.ts
+            │   ├── components/top-bar/        ✅
+            │   └── guards/                    ⬜ Pendiente (rutas protegidas)
+            ├── shared/                        ✅
+            │   └── components/
+            │       ├── auth-layout/           ✅
+            │       └── form-field/            ✅ (asterisco obligatorios, estado inválido)
+            ├── auth/                          ✅ Login + Register conectados a la API
+            ├── products/                      🟡 Catálogo (vistas creadas)
+            ├── user/                          🟡 Profile (vista creada)
+            └── seller/                        ⬜ Pendiente
 ```
 
 ---
@@ -262,6 +273,52 @@ CRUD completo de productos. Los vendedores crean y gestionan sus productos. Los 
 
 ---
 
+## Frontend — Módulo de autenticación (v1.0.6)
+
+**Estado general:** ✅ COMPLETO (login + registro funcionales)
+**Framework:** Angular 18 standalone + signals
+
+### Descripción
+Conexión real entre las pantallas de login/registro del frontend y los endpoints del backend (`/api/v1/auth/*`).
+
+### Archivos creados
+| Archivo | Propósito |
+|---|---|
+| `src/environments/environment.ts` | Base URL de la API (`http://localhost:8080/api/v1`) |
+| `src/app/core/models/api-response.ts` | Envelope `{ success, message, data, timestamp }` |
+| `src/app/core/models/auth.ts` | Tipos `LoginRequest`, `RegisterRequest`, `StoreInfo`, `AuthResponse` |
+| `src/app/core/services/token-storage.service.ts` | Persiste el JWT en `localStorage` |
+| `src/app/core/services/auth.service.ts` | `login()` y `register()` con HttpClient + guardado automático del token |
+
+### Cambios en componentes
+- `app.config.ts`: `provideHttpClient()` habilitado.
+- `auth/login`: llama a la API, muestra error (`message`/`detail` del backend), estado de carga en el botón y navega a `/catalog` al éxito.
+- `auth/register`: arma el payload (prefijo `+57` al teléfono, `store` obligatorio si SELLER), muestra errores y navega a `/catalog`.
+- Validación visual: asterisco rojo `*` en los campos obligatorios, borde rojo + mensaje bajo el campo inválido, y mensaje global listando los campos faltantes al presionar el botón con el formulario inválido.
+- Caso especial: "Nombre del negocio" se vuelve obligatorio (validator dinámico) solo cuando se activa el toggle de vendedor.
+
+### Validación de campos (coincide con el DTO backend)
+| Campo | Frontend | Backend |
+|---|---|---|
+| fullName | requerido | requerido |
+| email | requerido + formato | requerido + formato |
+| phone | requerido (se agrega +57) | `^\+57\d{10}$` |
+| password | requerido, mínimo 8 | requerido, mínimo 6 |
+| store.storeName | requerido si SELLER | requerido si SELLER/ADMIN |
+
+### Flujo verificado contra el backend real
+- `POST /auth/register` → 201, usuario persistido en `users` con hash BCrypt (y en `sellers` si es SELLER).
+- `POST /auth/login` → 200 con JWT.
+- Los usuarios registrados desde el frontend se guardan correctamente en la BD y pueden usarse para iniciar sesión.
+
+### Notas / pendientes
+- [x] Instalar/restaurar `rxjs` (faltaban los `.d.ts` del paquete).
+- [ ] Guard de rutas protegidas usando el token de `TokenStorageService`.
+- [ ] Persistir datos de sesión (usuario) en store/servicio.
+- [ ] Deslogueo (limpiar token).
+
+---
+
 ## Módulos planificados (próximas versiones)
 
 | Módulo | Descripción | Versión estimada |
@@ -355,4 +412,5 @@ ng build && npx cap sync
 | 2026-06-22 | 1.0.3 | Swagger/OpenAPI agregado. Config global con esquema JWT, 6 controllers documentados con @Tag + @Operation + @ApiResponse, 10 DTOs con @Schema |
 | 2026-06-22 | 1.0.4 | Swagger movido a 6 interfaces API separadas. Controllers limpios con JavaDoc. Sistema de logs AOP (consola coloreada). Dependencia spring-boot-starter-aop |
 | 2026-06-22 | 1.0.5 | Interfaces Swagger movidas a carpeta `swaggerdoc/` separada de controllers. Reglas de documentación agregadas a `PROJECT.md` |
+| 2026-08-13 | 1.0.6 | Frontend auth conectado al backend: `AuthService` (+ HttpClient), `TokenStorageService`, `environment.ts`. Login/registro con estados de carga, errores visibles (`message`/`detail`), redirección a `/catalog`. Validación visual de campos obligatorios (asterisco, borde rojo, mensaje con campos faltantes). Se corrigió `rxjs` (faltaban `.d.ts`). Verificado end-to-end contra el backend y la BD real |
 

@@ -1,0 +1,35 @@
+.auth-layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  isolation: isolate;
+  overflow: hidden;
+
+  &__decor {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+
+    &--top {
+      width: 256px;
+      height: 256px;
+      right: -48px;
+      top: -48px;
+      background: rgba(37, 211, 102, 0.1);
+      filter: blur(32px);
+      z-index: 0;
+    }
+
+    &--bottom {
+      width: 256px;
+      height: 256px;
+      left: -48px;
+      bottom: -48px;
+      background: rgba(0, 69, 61, 0.05);
+      filter: blur(32px);
+      z-index: 1;
+    }
+  }
+}

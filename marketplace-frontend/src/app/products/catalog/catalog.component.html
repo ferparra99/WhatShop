@@ -1,0 +1,50 @@
+<div class="catalog">
+  <app-top-bar [title]="'WhatShop'" [showBack]="false" [showMenu]="true"></app-top-bar>
+
+  <main class="catalog__main">
+    <!-- Search Bar -->
+    <div class="catalog__search">
+      <input
+        class="catalog__search-input"
+        type="search"
+        placeholder="Buscar en WhatShop..."
+        aria-label="Buscar productos"
+      />
+      <i class="pi pi-search catalog__search-icon"></i>
+    </div>
+
+    <!-- Categories -->
+    <div class="catalog__chips">
+      @for (category of categories; track category) {
+        <button
+          class="catalog__chip"
+          [class.catalog__chip--active]="$first"
+          type="button"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="catalog__hero">
+      <div class="catalog__hero-gradient"></div>
+      <div class="catalog__hero-content">
+        <h2 class="catalog__hero-title">Ofertas de la semana</h2>
+        <p class="catalog__hero-cta">
+          Ver ofertas
+          <i class="pi pi-arrow-right catalog__hero-arrow"></i>
+        </p>
+      </div>
+    </section>
+
+    <!-- Catalog Grid -->
+    <section class="catalog__grid" aria-label="Productos">
+      @for (product of products; track product.id) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </section>
+  </main>
+
+  <app-bottom-nav [active]="'home'"></app-bottom-nav>
+</div>
