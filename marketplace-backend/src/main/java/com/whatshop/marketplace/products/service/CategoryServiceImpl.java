@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     public Category create(String name, String imageUrl) {
-        var slug = name.toLowerCase().replaceAll("\\s+", "-").replaceAll("[^a-z0-9-]", "");
+        var slug = Normalizer.normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase()
+                .replaceAll("\\s+", "-")
+                .replaceAll("[^a-z0-9-]", "")
+                .replaceAll("-{2,}", "-")
+                .replaceAll("^-|-$", "");
 
         if (categoryRepository.existsByName(name)) {
             throw new BadRequestException("La categoría ya existe");
