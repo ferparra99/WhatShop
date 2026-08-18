@@ -30,14 +30,16 @@ class GlobalExceptionHandlerTest {
     class ResourceNotFound {
 
         @Test
-        @DisplayName("debe retornar 404 con mensaje")
+        @DisplayName("debe retornar 404 con envelope ApiResponse")
         void shouldReturn404() {
             var ex = new ResourceNotFoundException("Usuario no encontrado");
 
             var result = handler.handleNotFound(ex);
 
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getStatus());
-            assertEquals("Usuario no encontrado", result.getDetail());
+            assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+            assertFalse(result.getBody().isSuccess());
+            assertEquals("Usuario no encontrado", result.getBody().getMessage());
+            assertNull(result.getBody().getData());
         }
     }
 
@@ -46,30 +48,15 @@ class GlobalExceptionHandlerTest {
     class BadRequest {
 
         @Test
-        @DisplayName("debe retornar 400 con mensaje")
+        @DisplayName("debe retornar 400 con envelope ApiResponse")
         void shouldReturn400() {
             var ex = new BadRequestException("Datos invalidos");
 
             var result = handler.handleBadRequest(ex);
 
-            assertEquals(HttpStatus.BAD_REQUEST.value(), result.getStatus());
-            assertEquals("Datos invalidos", result.getDetail());
-        }
-    }
-
-    @Nested
-    @DisplayName("UnauthorizedException")
-    class Unauthorized {
-
-        @Test
-        @DisplayName("debe retornar 401 con mensaje")
-        void shouldReturn401() {
-            var ex = new UnauthorizedException("No autorizado");
-
-            var result = handler.handleUnauthorized(ex);
-
-            assertEquals(HttpStatus.UNAUTHORIZED.value(), result.getStatus());
-            assertEquals("No autorizado", result.getDetail());
+            assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+            assertFalse(result.getBody().isSuccess());
+            assertEquals("Datos invalidos", result.getBody().getMessage());
         }
     }
 
@@ -84,8 +71,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleBadCredentials(ex);
 
-            assertEquals(HttpStatus.UNAUTHORIZED.value(), result.getStatus());
-            assertEquals("Credenciales inv\u00e1lidas", result.getDetail());
+            assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+            assertEquals("Credenciales inv\u00e1lidas", result.getBody().getMessage());
         }
     }
 
@@ -100,7 +87,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleAccessDenied(ex);
 
-            assertEquals(HttpStatus.FORBIDDEN.value(), result.getStatus());
+            assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+            assertFalse(result.getBody().isSuccess());
         }
     }
 
@@ -118,8 +106,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleValidationErrors(ex);
 
-            assertEquals(HttpStatus.BAD_REQUEST.value(), result.getStatus());
-            assertTrue(result.getDetail().contains("email"));
+            assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+            assertTrue(result.getBody().getMessage().contains("email"));
         }
     }
 
@@ -134,7 +122,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleTypeMismatch(ex);
 
-            assertEquals(HttpStatus.BAD_REQUEST.value(), result.getStatus());
+            assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+            assertFalse(result.getBody().isSuccess());
         }
     }
 
@@ -149,8 +138,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleMissingParam(ex);
 
-            assertEquals(HttpStatus.BAD_REQUEST.value(), result.getStatus());
-            assertTrue(result.getDetail().contains("param"));
+            assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+            assertTrue(result.getBody().getMessage().contains("param"));
         }
     }
 
@@ -165,8 +154,8 @@ class GlobalExceptionHandlerTest {
 
             var result = handler.handleGeneral(ex);
 
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), result.getStatus());
-            assertEquals("Error interno del servidor", result.getDetail());
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
+            assertEquals("Error interno del servidor", result.getBody().getMessage());
         }
     }
 }

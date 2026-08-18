@@ -4,12 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.whatshop.marketplace.products.dto.CreateCategoryRequest;
 import com.whatshop.marketplace.products.entity.Category;
 import com.whatshop.marketplace.products.repository.CategoryRepository;
 import com.whatshop.marketplace.shared.exception.BadRequestException;
-import com.whatshop.marketplace.shared.exception.ResourceNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +32,13 @@ class CategoryServiceImplTest {
         categoryService = new CategoryServiceImpl(categoryRepository);
     }
 
+    private CreateCategoryRequest request(String name, String imageUrl) {
+        var req = new CreateCategoryRequest();
+        req.setName(name);
+        req.setImageUrl(imageUrl);
+        return req;
+    }
+
     @Nested
     @DisplayName("create")
     class Create {
@@ -48,7 +54,7 @@ class CategoryServiceImplTest {
                 return c;
             });
 
-            var result = categoryService.create("Electrónica", "https://example.com/img.jpg");
+            var result = categoryService.create(request("Electrónica", "https://example.com/img.jpg"));
 
             assertNotNull(result);
             assertEquals("Electrónica", result.getName());
@@ -63,7 +69,7 @@ class CategoryServiceImplTest {
             when(categoryRepository.existsBySlug("tecnologia-y-mas")).thenReturn(false);
             when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-            var result = categoryService.create("Tecnología y Más", null);
+            var result = categoryService.create(request("Tecnología y Más", null));
 
             assertEquals("tecnologia-y-mas", result.getSlug());
         }
@@ -75,7 +81,7 @@ class CategoryServiceImplTest {
             when(categoryRepository.existsBySlug("cafe-y-nonos")).thenReturn(false);
             when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-            var result = categoryService.create("Café y Ñoños", null);
+            var result = categoryService.create(request("Café y Ñoños", null));
 
             assertEquals("cafe-y-nonos", result.getSlug());
         }
@@ -87,7 +93,7 @@ class CategoryServiceImplTest {
             when(categoryRepository.existsBySlug("ropa-accesorios-2024")).thenReturn(false);
             when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-            var result = categoryService.create("Ropa & Accesorios 2024!", null);
+            var result = categoryService.create(request("Ropa & Accesorios 2024!", null));
 
             assertEquals("ropa-accesorios-2024", result.getSlug());
         }
@@ -97,7 +103,7 @@ class CategoryServiceImplTest {
         void shouldThrowWhenNameAlreadyExists() {
             when(categoryRepository.existsByName("Existent")).thenReturn(true);
 
-            assertThrows(BadRequestException.class, () -> categoryService.create("Existent", null));
+            assertThrows(BadRequestException.class, () -> categoryService.create(request("Existent", null)));
             verify(categoryRepository, never()).save(any());
         }
 
@@ -107,7 +113,7 @@ class CategoryServiceImplTest {
             when(categoryRepository.existsByName("Duplicate Slug")).thenReturn(false);
             when(categoryRepository.existsBySlug("duplicate-slug")).thenReturn(true);
 
-            assertThrows(BadRequestException.class, () -> categoryService.create("Duplicate Slug", null));
+            assertThrows(BadRequestException.class, () -> categoryService.create(request("Duplicate Slug", null)));
             verify(categoryRepository, never()).save(any());
         }
     }
@@ -117,7 +123,7 @@ class CategoryServiceImplTest {
     class ListAll {
 
         @Test
-        @DisplayName("debe retornar todas las categorias")
+        @DisplayName("debe retornar todas las categorias como DTO")
         void shouldReturnAllCategories() {
             var categories = List.of(
                     Category.builder().id(UUID.randomUUID()).name("Cat1").slug("cat1").build(),
@@ -127,31 +133,9 @@ class CategoryServiceImplTest {
             var result = categoryService.listAll();
 
             assertEquals(2, result.size());
-        }
-    }
-
-    @Nested
-    @DisplayName("getById")
-    class GetById {
-
-        @Test
-        @DisplayName("debe retornar categoria por ID existente")
-        void shouldReturnCategoryById() {
-            var category = Category.builder().id(UUID.randomUUID()).name("Test").slug("test").build();
-            when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
-
-            var result = categoryService.getById(category.getId());
-
-            assertEquals("Test", result.getName());
-        }
-
-        @Test
-        @DisplayName("debe lanzar excepcion si la categoria no existe")
-        void shouldThrowWhenNotFound() {
-            when(categoryRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-
-            assertThrows(ResourceNotFoundException.class,
-                    () -> categoryService.getById(UUID.randomUUID()));
+            assertEquals("Cat1", result.get(0).getName());
+            assertEquals("cat1", result.get(0).getSlug());
+            assertNotNull(result.get(0).getId());
         }
     }
 }

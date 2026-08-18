@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.whatshop.marketplace.products.entity.Category;
+import com.whatshop.marketplace.products.dto.CategoryDTO;
+import com.whatshop.marketplace.products.dto.CreateCategoryRequest;
 import com.whatshop.marketplace.products.service.CategoryService;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,8 +35,8 @@ class CategoryControllerTest {
     @DisplayName("GET /categories debe retornar lista de categorias")
     void listCategoriesShouldReturnAll() {
         var categories = List.of(
-                Category.builder().id(UUID.randomUUID()).name("Cat1").slug("cat1").build(),
-                Category.builder().id(UUID.randomUUID()).name("Cat2").slug("cat2").build());
+                CategoryDTO.builder().id(UUID.randomUUID()).name("Cat1").slug("cat1").build(),
+                CategoryDTO.builder().id(UUID.randomUUID()).name("Cat2").slug("cat2").build());
         when(categoryService.listAll()).thenReturn(categories);
 
         var response = categoryController.listCategories();
@@ -48,16 +48,20 @@ class CategoryControllerTest {
     @Test
     @DisplayName("POST /categories debe crear categoria")
     void createCategoryShouldSucceed() {
-        var category = Category.builder()
+        var dto = CategoryDTO.builder()
                 .id(UUID.randomUUID())
                 .name("New Category")
                 .slug("new-category")
                 .build();
-        when(categoryService.create(eq("New Category"), eq("https://img.com/img.jpg"))).thenReturn(category);
+        when(categoryService.create(any(CreateCategoryRequest.class))).thenReturn(dto);
 
-        var response = categoryController.createCategory(Map.of("name", "New Category", "imageUrl", "https://img.com/img.jpg"));
+        var request = new CreateCategoryRequest();
+        request.setName("New Category");
+        request.setImageUrl("https://img.com/img.jpg");
+
+        var response = categoryController.createCategory(request);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("New Category", ((Category) response.getBody().getData()).getName());
+        assertEquals("New Category", ((CategoryDTO) response.getBody().getData()).getName());
     }
 }

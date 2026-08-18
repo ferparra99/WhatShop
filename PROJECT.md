@@ -1,5 +1,5 @@
 # MarketApp — Documento de Proyecto
-> **Versión:** 1.0.6 | **Última actualización:** 2026-08-13
+> **Versión:** 1.0.7 | **Última actualización:** 2026-08-17
 > **Para agentes IA:** Este archivo es la fuente de verdad del proyecto. Cada módulo tiene su estado, dependencias, entidades y endpoints definidos. Antes de generar código, consultá este archivo para respetar la arquitectura acordada.
 
 ---
@@ -214,7 +214,7 @@ Gestión del perfil del comprador y el perfil extendido del vendedor (tienda, de
 
 **Estado general:** ✅ COMPLETO
 **Prioridad:** ALTA — depende del Módulo 2 (sellers)
-**Paquete:** `com.tuapp.marketplace.products`
+**Paquete:** `com.whatshop.marketplace.products`
 
 ### Descripción
 CRUD completo de productos. Los vendedores crean y gestionan sus productos. Los compradores pueden navegar, filtrar y buscar.
@@ -413,4 +413,5 @@ ng build && npx cap sync
 | 2026-06-22 | 1.0.4 | Swagger movido a 6 interfaces API separadas. Controllers limpios con JavaDoc. Sistema de logs AOP (consola coloreada). Dependencia spring-boot-starter-aop |
 | 2026-06-22 | 1.0.5 | Interfaces Swagger movidas a carpeta `swaggerdoc/` separada de controllers. Reglas de documentación agregadas a `PROJECT.md` |
 | 2026-08-13 | 1.0.6 | Frontend auth conectado al backend: `AuthService` (+ HttpClient), `TokenStorageService`, `environment.ts`. Login/registro con estados de carga, errores visibles (`message`/`detail`), redirección a `/catalog`. Validación visual de campos obligatorios (asterisco, borde rojo, mensaje con campos faltantes). Se corrigió `rxjs` (faltaban `.d.ts`). Verificado end-to-end contra el backend y la BD real |
+| 2026-08-17 | 1.0.7 | Seguridad backend + API unificada + Flyway + tests. **Seguridad:** revoke de tokens de usuarios deshabilitados en `JwtAuthFilter`, `@ToString.Exclude` en contraseñas (y en `User.password`), CORS configurables por propiedad (rechaza `*` + credentials), `JWT_SECRET` obligatorio sin default (solo default en perfil `dev`) + guardia de ≥32 bytes en `JwtUtil`. **API:** envelope único `ApiResponse` para todos los errores (reemplaza `ProblemDetail`), 401/403 con JSON vía `AuthenticationEntryPoint`/`AccessDeniedHandler`, eliminado el fallback `err.error?.detail` en el frontend. **Categorías:** DTOs `CategoryDTO` + `CreateCategoryRequest` (sin exponer entidad JPA). **Correcciones:** orden de matchers `/sellers/me` antes de `/{id}`, eliminación de código muerto (`UnauthorizedException`, `CategoryService.getById`, `ProductRepository.findBySellerId`), paquete de logging corregido, validaciones (`password` max 72, `price`/`stock` min en update). **Flyway:** migraciones de base de datos (reemplaza `init.sql`), `ddl-auto: validate`. **Tests:** suite de seguridad integrada (401/403 envelope, revoke, públicos), test de campos sensibles en `toString`, suite de Categorías y `GlobalExceptionHandler` adaptada |
 

@@ -100,4 +100,16 @@ class JwtUtilTest {
             assertFalse(jwtUtil.isValid(null));
         }
     }
+
+    @Nested
+    @DisplayName("constructor")
+    class Constructor {
+
+        @Test
+        @DisplayName("debe lanzar excepcion si la clave tiene menos de 32 bytes")
+        void shouldRejectShortSecret() {
+            assertThrows(IllegalArgumentException.class,
+                    () -> new JwtUtil("clave-muy-corta", EXPIRATION));
+        }
+    }
 }

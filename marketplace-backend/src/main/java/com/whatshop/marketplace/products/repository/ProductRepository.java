@@ -31,6 +31,4 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             @Param("sellerId") UUID sellerId,
             @Param("pattern") String pattern,
             Pageable pageable);
-
-    List<Product> findBySellerId(UUID sellerId);
 }

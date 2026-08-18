@@ -23,7 +23,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("WhatShop — Marketplace API")
-                        .version("1.0.2")
+                        .version("1.0.7")
                         .description(
                                 """
                                 API REST del marketplace multi-vendedor **WhatShop**.

@@ -3,8 +3,14 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-whatshop-256-bits-clave-local-123456}
 
 logging:
   level:
-    com.tuapp.marketplace: DEBUG
+    com.whatshop.marketplace: DEBUG
     org.springframework.security: DEBUG

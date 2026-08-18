@@ -24,21 +24,26 @@ Marketplace eCommerce donde vendedores publican productos y compradores los nave
 ```
 WhatShop/
 ├── docker-compose.yml         # PostgreSQL 15 en puerto 5433
-├── init.sql                   # DDL inicial de la base de datos
 ├── PROJECT.md                 # Documento fuente de verdad (agentes IA)
 ├── README.md                  # Este archivo
 │
 ├── marketplace-backend/       # Backend Spring Boot
-│   └── src/main/java/com/whatshop/marketplace/
-│       ├── config/            # Seguridad, Swagger, CORS, Logging AOP
-│       ├── shared/            # Excepciones globales, ApiResponse
-│       ├── auth/              # Registro, login, JWT, roles
-│       ├── users/             # Perfil de usuario
-│       ├── sellers/           # Perfil de vendedor (tienda)
-│       └── products/          # Productos, categorías, catálogo
+│   └── src/main
+│       ├── java/com/whatshop/marketplace/
+│       │   ├── config/            # Seguridad, Swagger, CORS, Logging AOP
+│       │   ├── shared/            # Excepciones globales, ApiResponse
+│       │   ├── auth/              # Registro, login, JWT, roles
+│       │   ├── users/             # Perfil de usuario
+│       │   ├── sellers/           # Perfil de vendedor (tienda)
+│       │   └── products/          # Productos, categorías, catálogo
+│       └── resources/db/migration/  # Migraciones Flyway (schema gestionado por Flyway)
 │
-└── marketplace-frontend/      # Frontend Angular (próximamente)
+└── marketplace-frontend/      # Frontend Angular
 ```
+
+> El esquema de la base de datos lo gestiona **Flyway** (`V1__baseline_schema.sql`)
+> desde el primer arranque. Los contenedores PostgreSQL existentes se hacen
+> "baseline" automáticamente (si ya tienen las tablas, no se vuelven a crear).
 
 ## Cómo Empezar
 
@@ -54,8 +59,13 @@ set JAVA_HOME=C:\Users\ferpa\java\jdk-21
 docker-compose up -d
 
 # 4. Iniciar backend
+#    (opción A) perfil dev — usa un JWT_SECRET por defecto solo para desarrollo:
 cd marketplace-backend
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+#    (opción B) producción/estricto — JWT_SECRET es obligatorio:
+#    set JWT_SECRET=tu-clave-de-al-menos-32-bytes
+#    mvn spring-boot:run
 
 # 5. (Opcional) Iniciar frontend
 cd ../marketplace-frontend
@@ -72,8 +82,9 @@ El backend arranca en `http://localhost:8080`.
 | `DB_URL` | `jdbc:postgresql://localhost:5433/marketplace_db` | Conexión a PostgreSQL |
 | `DB_USER` | `marketplace_user` | Usuario de base de datos |
 | `DB_PASS` | `marketplace_pass` | Contraseña de base de datos |
-| `JWT_SECRET` | `tu-clave-secreta-de-minimo-256-bits-para-desarrollo-local` | Clave para firmar JWT |
+| `JWT_SECRET` | *obligatorio* (≥32 bytes; default solo en perfil `dev`) | Clave para firmar JWT. Sin default en `application.yml` |
 | `JWT_EXPIRATION` | `86400000` | Expiración del token (24h en ms) |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:4200,http://localhost:8100` | Orígenes permitidos (comma-separated). No usar `*` con credentials |
 
 ## Roles del Sistema
 

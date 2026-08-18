@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public class LoginRequest {
@@ -15,5 +16,6 @@ public class LoginRequest {
 
     @Schema(description = "Contraseña del usuario", example = "miClave123")
     @NotBlank(message = "La contraseña es obligatoria")
+    @ToString.Exclude
     private String password;
 }

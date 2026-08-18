@@ -1,6 +1,8 @@
 package com.whatshop.marketplace.products.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -19,9 +21,11 @@ public class UpdateProductRequest {
     private String description;
 
     @Schema(description = "Nuevo precio", example = "199990.00")
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
     private BigDecimal price;
 
     @Schema(description = "Nuevo stock", example = "50")
+    @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer stock;
 
     @Schema(description = "Nueva URL de la imagen", example = "https://ejemplo.com/nuevo-producto.jpg")

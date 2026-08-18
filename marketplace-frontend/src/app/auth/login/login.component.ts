@@ -80,7 +80,7 @@ export class LoginComponent {
         }
       },
       error: err => {
-        this.error.set(err.error?.message || err.error?.detail || 'Credenciales incorrectas. Inténtalo de nuevo.');
+        this.error.set(err.error?.message || 'Credenciales incorrectas. Inténtalo de nuevo.');
       },
       complete: () => this.loading.set(false)
     });

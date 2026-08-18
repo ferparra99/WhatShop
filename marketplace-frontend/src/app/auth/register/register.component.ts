@@ -123,7 +123,7 @@ export class RegisterComponent {
         }
       },
       error: err => {
-        this.error.set(err.error?.message || err.error?.detail || 'Error al registrar. Verifica los datos.');
+        this.error.set(err.error?.message || 'Error al registrar. Verifica los datos.');
       },
       complete: () => this.loading.set(false)
     });

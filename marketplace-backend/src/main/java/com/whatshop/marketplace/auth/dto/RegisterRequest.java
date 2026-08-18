@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public class RegisterRequest {
@@ -19,7 +20,8 @@ public class RegisterRequest {
 
     @Schema(description = "Contraseña (mínimo 6 caracteres)", example = "miClave123")
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
+    @Size(min = 6, max = 72, message = "La contraseña debe tener entre 6 y 72 caracteres")
+    @ToString.Exclude
     private String password;
 
     @Schema(description = "Nombre completo del usuario", example = "Juan Pérez")

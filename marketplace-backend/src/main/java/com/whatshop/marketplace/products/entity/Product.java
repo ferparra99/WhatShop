@@ -47,7 +47,7 @@ public class Product {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     @Builder.Default
     private ProductStatus status = ProductStatus.ACTIVE;
 

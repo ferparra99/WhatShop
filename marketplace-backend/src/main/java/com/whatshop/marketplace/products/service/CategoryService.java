@@ -1,12 +1,11 @@
 package com.whatshop.marketplace.products.service;
 
-import com.whatshop.marketplace.products.entity.Category;
+import com.whatshop.marketplace.products.dto.CategoryDTO;
+import com.whatshop.marketplace.products.dto.CreateCategoryRequest;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface CategoryService {
-    List<Category> listAll();
-    Category getById(UUID id);
-    Category create(String name, String imageUrl);
+    List<CategoryDTO> listAll();
+    CategoryDTO create(CreateCategoryRequest request);
 }
