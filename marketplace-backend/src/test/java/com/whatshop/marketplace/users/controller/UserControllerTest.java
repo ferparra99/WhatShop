@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import com.whatshop.marketplace.auth.entity.Role;
 import com.whatshop.marketplace.auth.entity.User;
-import com.whatshop.marketplace.shared.response.ApiResponse;
 import com.whatshop.marketplace.users.dto.UpdateUserRequest;
 import com.whatshop.marketplace.users.dto.UserProfileDTO;
 import com.whatshop.marketplace.users.service.UserService;

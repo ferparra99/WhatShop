@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.whatshop.marketplace.auth.dto.AuthResponse;
 import com.whatshop.marketplace.auth.dto.LoginRequest;
 import com.whatshop.marketplace.auth.dto.RegisterRequest;
 import com.whatshop.marketplace.auth.entity.Role;

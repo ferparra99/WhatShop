@@ -12,7 +12,6 @@ import com.whatshop.marketplace.products.dto.ProductPageResponse;
 import com.whatshop.marketplace.products.dto.UpdateProductRequest;
 import com.whatshop.marketplace.products.service.ProductService;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;

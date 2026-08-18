@@ -10,7 +10,6 @@ import com.whatshop.marketplace.products.entity.Product;
 import com.whatshop.marketplace.products.entity.ProductStatus;
 import com.whatshop.marketplace.products.repository.CategoryRepository;
 import com.whatshop.marketplace.products.repository.ProductRepository;
-import com.whatshop.marketplace.sellers.entity.Seller;
 import com.whatshop.marketplace.sellers.repository.SellerRepository;
 import com.whatshop.marketplace.shared.exception.BadRequestException;
 import com.whatshop.marketplace.shared.exception.ResourceNotFoundException;

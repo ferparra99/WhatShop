@@ -39,8 +39,7 @@ class SellerServiceImplTest {
     private UUID userId;
     private Seller seller;
     private User user;
-    private Seller inactiveSeller;
-
+    
     @BeforeEach
     void setUp() {
         sellerService = new SellerServiceImpl(sellerRepository, userRepository);
@@ -66,7 +65,7 @@ class SellerServiceImplTest {
                 .active(true)
                 .build();
 
-        inactiveSeller = Seller.builder()
+        Seller.builder()
                 .id(UUID.randomUUID())
                 .user(user)
                 .storeName("Inactive Store")

@@ -1,15 +1,11 @@
 package com.whatshop.marketplace.auth.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import com.whatshop.marketplace.auth.entity.Role;
-import com.whatshop.marketplace.auth.entity.User;
-import com.whatshop.marketplace.shared.response.ApiResponse;
 import com.whatshop.marketplace.users.dto.UserProfileDTO;
 import com.whatshop.marketplace.users.service.UserService;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
